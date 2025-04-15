@@ -1,4 +1,4 @@
-import { CASCADE_ANIMATION_DELAY, AkronymState, AkronymAnimation, AkronymVisibility, AkronymElement } from './AkronymGlobal.js';
+import { AkronymState, AkronymAnimation, AkronymVisibility } from './AkronymGlobal.js';
 export class AkronymButton extends HTMLButtonElement {
 
     private clickEvent: CustomEvent;

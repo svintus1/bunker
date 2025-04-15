@@ -23,17 +23,16 @@
             <video id="intro" src="./static/bunker_intro_optimized.mp4" preload="auto" playsinline muted></video>
             <audio id="intro-sound" src="./static/bunker_intro.mp3" preload="auto"></audio>
         </div>
-        <button is="ak-button" id="start" data-click-event="startIntro" data-hidden>Играть</button>
-
-        <div id="main-menu">
-            <img src="./static/label.jpg" id="label"/>
-            <button is="ak-button">Создать игру</button>
-            <button is="ak-button">Присоединиться</button>
+        <div is="ak-div" id="cover" data-state="opened" data-visibility="visible">
+            <button is="ak-button" id="start" data-click-event="startIntro">Играть</button>
         </div>
-        <div id="profile">
-
+        <div id="starting-page">
+            <div id="main-menu">
+                <img src="./static/label.jpg" id="label"/>
+                <button is="ak-button">Создать игру</button>
+                <button is="ak-button">Присоединиться</button>
+            </div>
         </div>
-
         <script src="js/scripts/main.js" type="module"></script>
     </body>
 </html>
