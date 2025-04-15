@@ -1,0 +1,67 @@
+button#start
+{
+    position: fixed;
+
+    justify-self: center;
+    align-self: center;
+    z-index: 1;
+}
+
+video
+{
+    z-index: 0;
+}
+
+body
+{
+    height: 100%;
+
+    padding-left: 200px;
+    padding-right: 200px;
+    padding-top: 100px;
+    padding-bottom: 100px;
+
+    background-color: var(--main-color);
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#main-menu
+{
+    position: relative;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    gap: 50px;
+}
+
+#main-menu
+button
+{
+    width: 300px;
+}
+
+#main-menu
+#label
+{
+    width: 500px;
+}
+
+#profile
+{
+    width: 500px;
+    height: 800px;
+
+    background-color: var(--less-main-color);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+}

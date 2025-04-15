@@ -1,0 +1,39 @@
+@import url(../akronym/styles/akronym-animations.css);
+@import url(../akronym/styles/akronym-global.css);
+@import url(./main.css);
+
+:root
+{
+  --main-color: black;
+  --less-main-color: #2c2c2c;
+  --secondary-color: white;
+  --less-secondary-color: #dadada;
+  --theme-color: #f8ba00;
+}
+
+html
+{
+  height: 100%;
+
+  color: var(--secondary-color);
+  font-family: 'Lato', sans-serif;
+}
+
+*
+{
+  margin: 0;
+  border: none;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+[data-hidden]
+{
+  visibility: hidden;
+}
+
+button
+{
+  all: none;
+}
+
