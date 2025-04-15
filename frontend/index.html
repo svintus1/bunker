@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>BUNKER</title>
+        <link rel="stylesheet" href="css/global.css"/>
+        <!-- Фавикон -->
+        <link rel="icon" href="./static/favicon/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="./static/favicon/favicon-16x16.png" sizes="16x16" type="image/png">
+        <link rel="icon" href="./static/favicon/favicon-32x32.png" sizes="32x32" type="image/png">
+
+        <!-- Иконки для Android -->
+        <link rel="icon" href="./static/favicon/android-chrome-192x192.png" sizes="192x192" type="image/png">
+        <link rel="icon" href="./static/favicon/android-chrome-512x512.png" sizes="512x512" type="image/png">
+
+        <!-- Иконка для Apple -->
+        <link rel="apple-touch-icon" href="./static/favicon/apple-touch-icon.png">
+
+        <!-- Web Manifest -->
+        <link rel="manifest" href="./static/favicon/site.webmanifest">
+    </head>
+    <body>
+        <div is="ak-splash" data-state="closed" data-visibility="hidden" data-hidden>
+            <video id="intro" src="./static/bunker_intro_optimized.mp4" preload="auto" playsinline muted></video>
+            <audio id="intro-sound" src="./static/bunker_intro.mp3" preload="auto"></audio>
+        </div>
+        <button is="ak-button" id="start" data-click-event="startIntro" data-hidden>Играть</button>
+
+        <div id="main-menu">
+            <img src="./static/label.jpg" id="label"/>
+            <button is="ak-button">Создать игру</button>
+            <button is="ak-button">Присоединиться</button>
+        </div>
+        <div id="profile">
+
+        </div>
+
+        <script src="js/scripts/main.js" type="module"></script>
+    </body>
+</html>
