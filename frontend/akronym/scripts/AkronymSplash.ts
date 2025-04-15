@@ -7,6 +7,7 @@ export class AkronymSplash extends HTMLDivElement {
     {
         visible: 'fade-in',
         hidden: 'fade-out',
+        deleted: 'fade-out'
     };
 
     constructor() {
