@@ -42,6 +42,7 @@ export class AkronymAnimator {
         akronymElement.dataset.hidden = 'true';
       }
       akronymElement.dispatchEvent(new CustomEvent("animationend" + target.toString()))
+      if (akronymElement.dataset.visibility == 'deleted') akronymElement.remove();
     }, duration);
   }
 }

@@ -6,6 +6,7 @@ export class AkronymButton extends HTMLButtonElement {
     {
         visible: 'fade-in',
         hidden: 'fade-out',
+        deleted: 'fade-out'
     };
 
     constructor(){
