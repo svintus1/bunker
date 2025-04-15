@@ -24,13 +24,22 @@
             <video id="intro" src="./static/bunker_intro_optimized.mp4" preload="auto" playsinline muted></video>
             <audio id="intro-sound" src="./static/bunker_intro.mp3" preload="auto"></audio>
         </div>
-        <div is="ak-div" id="cover" data-visibility="visible" data-state="opened">
+        <div is="ak-div" id="cover">
             <button is="ak-button" id="start" data-click-event="startIntro">Играть</button>
         </div>
     
         <div id="starting-page">
             <div id="main-menu">
-                <img src="./static/label.jpg" id="label"/>
+                <img src="./static/label.png" id="label"/>
+                <input
+                name="username"
+                type="text"
+                placeholder="Имя пользователя"
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="off"
+                spellcheck="false"
+                />
                 <button is="ak-button">Создать игру</button>
                 <button is="ak-button">Присоединиться</button>
             </div>

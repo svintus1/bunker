@@ -21,13 +21,13 @@ button
 {
     display: block;
     width: 200px;
-    height: 64px;
+    height: 56px;
 
-    background-image: url(../../static/texture.jpg);
-    background-blend-mode: multiply;
+    /* background-image: url(../../static/texture.jpg);
+    background-blend-mode: multiply; */
     background-color: var(--theme-color);
     background-position: center;
-    background-size: cover;
+    background-size: 100%;
     background-repeat: no-repeat;
 
     border: 2px solid var(--theme-color);
@@ -35,6 +35,7 @@ button
     color: black;
     font-size: 32px;
     font-weight: bold;
+    font-family: inherit;
 
     display: flex;
     justify-content: center;
@@ -45,8 +46,65 @@ button
     transition: background-color 0.25s ease-out, color 0.25s ease-out;
 }
 
-button:hover
+input[type="text"]
+{
+    display: block;
+    width: 200px;
+    height: 64px;
+
+    background-color: black;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    border: 2px solid var(--theme-color);
+    border-radius: 20px;
+
+    color: var(--theme-color);
+    font-size: 32px;
+    font-weight: bold;
+    font-family: inherit;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    cursor: text;
+
+    transition: background-color 0.25s ease-out, color 0.25s ease-out;
+}
+
+input[type="text"]::selection
+{
+    color: var(--theme-color);
+    background-color: black;
+}
+
+input[type="text"]:hover, input[type="text"]:focus
+{
+    background-color: var(--theme-color);
+    color: black;
+    outline: none;
+}
+
+input[type="text"]::placeholder
+{
+    color: var(--theme-color);
+}
+input[type="text"]:hover::placeholder, input[type="text"]:focus::placeholder
+{
+    color: black;
+}
+
+::selection
+{
+    color: black;
+    background-color: var(--theme-color);
+}
+
+button:hover, button:focus
 {
     background-color: black;
     color: var(--theme-color);
+    outline: none;
 }

@@ -10,13 +10,60 @@
   --less-secondary-color: #dadada;
   --theme-color: #f8ba00;
 }
+@font-face {
+  font-family: 'TheCrewPro';
+  src: url('../static/fonts/TheCrewPro.ttf')  format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Cornerita';
+  src: url('../static//fonts/Cornerita-Thin.ttf') format('truetype');
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Cornerita';
+  src: url('../static//fonts/Cornerita-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Cornerita';
+  src: url('../static//fonts/Cornerita-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Cornerita';
+  src: url('../static//fonts/Cornerita-Black.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Cornerita VF';
+  src: url('../static//fonts/Cornerita-VF.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+}
 
 html
 {
   height: 100%;
 
   color: var(--secondary-color);
-  font-family: 'Lato', sans-serif;
+  font-family: 'Cornerita VF', sans-serif;
+}
+
+body
+{
+  height: 100%;
+
+  background-color: var(--main-color);
 }
 
 *
@@ -30,10 +77,5 @@ html
 [data-hidden]
 {
   visibility: hidden;
-}
-
-button
-{
-  all: auto;
 }
 
