@@ -20,7 +20,7 @@ export class AkronymAnimator {
     }, cascadeIndex * CASCADE_ANIMATION_DELAY);
   }
 
-  static changeState(akronymElement: AkronymElement, state: AkronymState, duration: number): void {
+  static changeState(akronymElement: any, state: AkronymState, duration: number): void {
     const current = akronymElement.dataset.state ?? 'idle';
     if (current === state) return;
 
@@ -30,7 +30,7 @@ export class AkronymAnimator {
     AkronymAnimator.runAnimation(akronymElement, animation, duration, state);
   }
 
-  static runAnimation(akronymElement: AkronymElement, animation: AkronymAnimation, duration: number, target: AkronymState | AkronymVisibility): void {
+  static runAnimation(akronymElement: any, animation: AkronymAnimation, duration: number, target: AkronymState | AkronymVisibility): void {
     akronymElement.dataset.animation = animation;
     if (akronymElement.dataset.visibility == 'visible'){
         akronymElement.removeAttribute('data-hidden');
