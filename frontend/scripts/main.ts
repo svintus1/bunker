@@ -17,8 +17,14 @@ class App {
         this.startButton = document.querySelector('button#start') as AkronymButton;
         this.cover = document.querySelector('div#cover') as AkronymDiv;
 
-        AkronymEventRouter.add(this.startButton, "startIntro", this.startIntro.bind(this), true);
-        AkronymEventRouter.add(this.splash, "introEnd", this.endIntro.bind(this), true);
+        const navEntry = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming;
+
+        if (navEntry.type === "reload") {
+          this.skipIntro();
+        }
+        else{
+            this.initIntro();
+        }
 
         this.init();
     }
@@ -30,6 +36,21 @@ class App {
 
     init(): void {
         // Fetch data from cookies and obtain user's avatar from server
+    }
+
+    skipIntro(){
+        console.log("Skip intro");
+        AkronymAnimator.changeState(this.cover, "closed", 0);
+        AkronymAnimator.changeVisibility(this.cover, "deleted", 0);
+        AkronymAnimator.changeVisibility(this.splash, "deleted", 0);
+    }
+
+    initIntro(){
+        console.log("Intro initialized");
+        AkronymAnimator.changeState(this.cover, "opened", 0);
+        AkronymAnimator.changeVisibility(this.cover, "visible", 0);
+        AkronymEventRouter.add(this.startButton, "startIntro", this.startIntro.bind(this), true);
+        AkronymEventRouter.add(this.splash, "introEnd", this.endIntro.bind(this), true);
     }
 
     startIntro(): void {
