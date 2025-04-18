@@ -13,6 +13,21 @@ def create_user(session: Session, user_create: UserCreate) -> User:
     session.refresh(user)
     return user
 
+
+def get_user_by_id(session: Session, id: str) -> User | None:
+    """Get user by ID."""
+    statement = select(User).where(User.id == id)
+    user_by_id = session.exec(statement).first()
+    return user_by_id
+
+
+def get_user_by_name(session: Session, name: str) -> User | None:
+    """Get user by name."""
+    statement = select(User).where(User.name == name)
+    user_by_name = session.exec(statement).first()
+    return user_by_name
+
+
 def delete_user(session: Session, user: User) -> None:
     """Delete user."""
     session.delete(user)
