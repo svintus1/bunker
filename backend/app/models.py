@@ -42,7 +42,7 @@ class Player(User):
     
     Player is the user who is in lobby."""
 
-    lobby_id: int | None = Field(default=None, foreign_key="lobby.id")
+    lobby_id: uuid.UUID | None = Field(default=None, foreign_key="lobby.id")
     lobby: Lobby | None = Relationship(back_populates="player_ids")
 
     def save_to_redis(self, redis_connection: Annotated[Redis[str], Depends[get_redis_connection]]) -> str:
