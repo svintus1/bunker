@@ -1,3 +1,5 @@
+.dockerignore
+
 # Python
 __pycache__
 app.egg-info
