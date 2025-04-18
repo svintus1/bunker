@@ -8,7 +8,7 @@ from pydantic import (
 class Settings(BaseSettings):
     ENVIRONMENT: Literal["development", "production"] = "development"
 
-    API_STR: str = "/api/"
+    API_STR: str = "/api"
     PROJECT_NAME: str = "bunker"
 
     BACKEND_HOST: str = "0.0.0.0"
