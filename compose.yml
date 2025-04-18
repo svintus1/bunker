@@ -19,6 +19,7 @@ services:
     env_file:
       -  config/.env.backend
       -  config/.env.pg
+      - ./config/.env.redis
     networks:
       - my_network
     ports:
@@ -37,9 +38,23 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
 
+  redis:
+    image: redis:7.4-alpine
+    container_name: redis_db
+    restart: always
+    env_file:
+      - ./config/.env.redis
+    networks:
+      - my_network
+    ports:
+      - 6379:6379
+    volumes:
+      - redis_data:/data
+
 networks:
   my_network:
     driver: bridge
 
 volumes:
   pg_data:
+  redis_data:
