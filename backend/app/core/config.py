@@ -3,6 +3,7 @@ from typing import Annotated, Literal
 from pydantic import (
     computed_field,
     PostgresDsn,
+    RedisDsn
 )
 
 class Settings(BaseSettings):
@@ -40,6 +41,20 @@ class Settings(BaseSettings):
             host=self.POSTGRES_HOST,
             port=self.POSTGRES_PORT,
             path=self.POSTGRES_DB
+        )
+
+    REDIS_HOST: str
+    REDIS_PORT: int = 6379
+    REDIS_PASSWORD: str
+
+    @computed_field
+    @property
+    def REDIS_DATABASE_URI(self) -> RedisDsn:
+        return RedisDsn.build(
+            scheme="redis",
+            password=self.REDIS_PASSWORD,
+            host=self.REDIS_HOST,
+            port=self.REDIS_PORT
         )
 
 
