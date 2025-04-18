@@ -1,6 +1,7 @@
 import uuid
 
 from sqlmodel import Field, Relationship, SQLModel
+from redis_om import HashModel
 
 
 class UserCreate(SQLModel):
@@ -15,14 +16,20 @@ class User(UserCreate, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
 
 
-class Lobby(SQLModel):
+class LobbyCreate(HashModel):
+    """Lobby model to receive via API on creation."""
+
+    name: str = Field(max_length=255)
+    creator_id: uuid.UUID
+
+
+class Lobby(LobbyCreate):
     """Lobby redis model.
     
     A group of players joins together in lobby. Lobby always has at least one player (`creator`)."""
 
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     players: list["Player"] = Relationship(back_populates="lobby")
-    creator: "Player"
 
 
 class Player(User):
