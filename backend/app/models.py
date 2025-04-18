@@ -22,6 +22,7 @@ class Lobby(SQLModel):
 
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     players: list["Player"] = Relationship(back_populates="lobby")
+    creator: "Player"
 
 
 class Player(User):
