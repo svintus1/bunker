@@ -1,48 +1,66 @@
-import { CASCADE_ANIMATION_DELAY, AkronymState, AkronymAnimation, AkronymVisibility, AkronymElement } from './AkronymGlobal.js';
+import { CASCADE_ANIMATION_DELAY, AkronymState, AkronymAnimation, AkronymVisibility } from './AkronymGlobal.js';
 
 export class AkronymAnimator {
-  static changeVisibility(akronymElement: any, visibility: AkronymVisibility, duration: number): void {
-    const current = akronymElement.dataset.visibility ?? 'visible';
+  static changeVisibility(element: any, visibility: AkronymVisibility, animation: AkronymAnimation, duration: number, isCascade: boolean = false): void {
+    const current = element.dataset.visibility ?? 'visible';
     if (current === visibility) return;
 
-    akronymElement.dataset.visibility = visibility;
+    element.dataset.visibility = visibility;
 
     const cascadeIndex = parseInt(
       visibility === 'visible'
-        ? akronymElement.dataset.cascadeShow ?? '0'
-        : akronymElement.dataset.cascadeHide ?? '0'
+        ? element.dataset.cascadeShow ?? '0'
+        : element.dataset.cascadeHide ?? '0'
     );
 
-    const animation = akronymElement.animations[visibility] ?? 'none';
-
+    // Запуск анимации для текущего элемента
     setTimeout(() => {
-        AkronymAnimator.runAnimation(akronymElement, animation, duration, visibility);
+        AkronymAnimator.runAnimation(element, animation, duration, visibility);
     }, cascadeIndex * CASCADE_ANIMATION_DELAY);
-  }
 
-  static changeState(akronymElement: any, state: AkronymState, duration: number): void {
-    const current = akronymElement.dataset.state ?? 'idle';
+    // Если isCascade включен, рекурсивно вызываем функцию для дочерних элементов
+    if (isCascade) {
+        const children = element.querySelectorAll('[data-cascade-show], [data-cascade-hide]');
+        
+        children.forEach((child: any) => {
+            // Получаем каскадный индекс для каждого дочернего элемента
+            const childCascadeIndex = parseInt(
+                visibility === 'visible'
+                    ? child.dataset.cascadeShow ?? '0'
+                    : child.dataset.cascadeHide ?? '0'
+            );
+
+            // Устанавливаем задержку с учётом индивидуального индекса дочернего элемента
+            setTimeout(() => {
+                AkronymAnimator.changeVisibility(child, visibility, animation, duration, false);
+            }, (cascadeIndex + childCascadeIndex) * CASCADE_ANIMATION_DELAY); // Увеличиваем задержку с учётом индекса дочернего элемента
+        });
+    }
+}
+
+
+  static changeState(element: any, state: AkronymState, animation: AkronymAnimation, duration: number): void {
+    const current = element.dataset.state ?? 'idle';
     if (current === state) return;
 
-    akronymElement.dataset.state = state;
+    element.dataset.state = state;
 
-    const animation = akronymElement.animations[state] ?? 'none';
-    AkronymAnimator.runAnimation(akronymElement, animation, duration, state);
+    AkronymAnimator.runAnimation(element, animation, duration, state);
   }
 
-  static runAnimation(akronymElement: any, animation: AkronymAnimation, duration: number, target: AkronymState | AkronymVisibility): void {
-    akronymElement.dataset.animation = animation;
-    if (akronymElement.dataset.visibility == 'visible'){
-        akronymElement.removeAttribute('data-hidden');
+  static runAnimation(element: any, animation: AkronymAnimation, duration: number, target: AkronymState | AkronymVisibility): void {
+    element.dataset.animation = animation;
+    if (element.dataset.visibility == 'visible'){
+        element.removeAttribute('data-hidden');
     }
 
     setTimeout(() => {
-      akronymElement.dataset.animation = 'none';
-      if (akronymElement.dataset.visibility == 'hidden'){
-        akronymElement.dataset.hidden = 'true';
+      element.dataset.animation = 'none';
+      if (element.dataset.visibility == 'hidden'){
+        element.dataset.hidden = 'true';
       }
-      akronymElement.dispatchEvent(new CustomEvent("animationend" + target.toString()))
-      if (akronymElement.dataset.visibility == 'deleted') akronymElement.remove();
+      element.dispatchEvent(new CustomEvent("animationend" + target.toString()))
+      if (element.dataset.visibility == 'deleted') element.remove();
     }, duration);
   }
 }
