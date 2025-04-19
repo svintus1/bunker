@@ -1,74 +1,62 @@
-import { AkronymSplash } from '../akronym/scripts/AkronymSplash.js';
-import { AkronymButton } from '../akronym/scripts/AkronymButton.js';
 import { AkronymEventRouter } from '../akronym/scripts/AkronymEventRouter.js';
 import { AkronymAnimator } from '../akronym/scripts/AkronymAnimator.js';
-import { AkronymDiv } from '../akronym/scripts/AkronymDiv.js';
-class App {
-    public root: HTMLElement;
+export function init(): void {
+    (window as any).MainMenu = new MainMenu();
+}
+class MainMenu {
+    public root: HTMLDivElement;
     public body: HTMLBodyElement;
-    public splash: AkronymSplash;
-    public startButton: AkronymButton;
-    public cover: AkronymDiv;
-
+    public splashscreen: HTMLDivElement;
+    public playButton: HTMLButtonElement;
+    public cover: HTMLDivElement;
+    public introAudio: HTMLAudioElement | null = null;
+    public introVideo: HTMLVideoElement | null = null;
     constructor() {
-        this.root = document.documentElement;
+        this.root = document.getElementById('root') as HTMLDivElement;
         this.body = document.body as HTMLBodyElement;
-        this.splash = document.querySelector('[is="ak-splash"]') as AkronymSplash;
-        this.startButton = document.querySelector('button#start') as AkronymButton;
-        this.cover = document.querySelector('div#cover') as AkronymDiv;
+        this.splashscreen = document.getElementById('splashscreen') as HTMLDivElement;
+        this.playButton = document.getElementById('play-button') as HTMLButtonElement;
+        this.cover = document.getElementById('cover') as HTMLDivElement;
 
         const navEntry = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming;
 
-        if (navEntry.type === "reload") {
+        if (navEntry.type === "reload"){
           this.skipIntro();
         }
         else{
             this.initIntro();
         }
-
-        this.init();
     }
-
-    deleteElement() : void 
-    {
-
-    }
-
-    init(): void {
-        // Fetch data from cookies and obtain user's avatar from server
-    }
-
     skipIntro(){
         console.log("Skip intro");
-        AkronymAnimator.changeState(this.cover, "closed", 0);
-        AkronymAnimator.changeVisibility(this.cover, "deleted", 0);
-        AkronymAnimator.changeVisibility(this.splash, "deleted", 0);
+        AkronymAnimator.changeState(this.cover, "closed", 'fade-out', 0);
+        AkronymAnimator.changeVisibility(this.cover, "hidden", 'fade-out', 0);
+        AkronymAnimator.changeVisibility(this.playButton, "deleted", 'fade-out', 0);
+        AkronymAnimator.changeVisibility(this.splashscreen, "deleted", 'fade-out', 0);
     }
 
     initIntro(){
         console.log("Intro initialized");
-        AkronymAnimator.changeState(this.cover, "opened", 0);
-        AkronymAnimator.changeVisibility(this.cover, "visible", 0);
-        AkronymEventRouter.add(this.startButton, "startIntro", this.startIntro.bind(this), true);
-        AkronymEventRouter.add(this.splash, "introEnd", this.endIntro.bind(this), true);
+        AkronymAnimator.changeState(this.cover, "opened", 'fade-in', 0);
+        AkronymAnimator.changeVisibility(this.cover, "visible", 'fade-in', 0);
+        AkronymAnimator.changeVisibility(this.playButton, "visible", 'fade-in', 0);
+
+        this.introAudio = document.getElementById("intro-audio") as HTMLAudioElement;
+        this.introVideo = document.getElementById("intro-video") as HTMLVideoElement;
+
+        AkronymEventRouter.add(this.playButton, "click", this.startIntro.bind(this), true);
+        AkronymEventRouter.add(this.introAudio, "ended", this.endIntro.bind(this), true);
     }
 
     startIntro(): void {
-        AkronymAnimator.changeVisibility(this.splash, "visible", 3000);
-        this.splash.startAudio();
-        AkronymEventRouter.add(this.splash, "animationendvisible", () => {
-            AkronymAnimator.changeVisibility(this.cover, "deleted", 0)
-            this.splash.startVideo();
-        }, true)
+        AkronymAnimator.changeVisibility(this.splashscreen, "visible", 'fade-in', 3000);
+        this.introAudio?.play();
+        AkronymEventRouter.add(this.splashscreen, "animationendvisible", () => this.introVideo?.play(), true)
     }
 
     endIntro(): void {
-        AkronymAnimator.changeVisibility(this.splash, "deleted", 3000);
+        AkronymAnimator.changeVisibility(this.cover, "hidden", 'fade-out', 0);
+        AkronymAnimator.changeVisibility(this.playButton, "deleted", 'fade-out', 0);
+        AkronymAnimator.changeVisibility(this.splashscreen, "deleted", 'fade-out', 3000);
     }
 }
-
-customElements.define('ak-button', AkronymButton, { extends: 'button' });
-customElements.define('ak-splash', AkronymSplash, { extends: 'div'})
-customElements.define('ak-div', AkronymDiv, { extends: 'div'})
-
-window.app = new App();

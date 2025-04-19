@@ -18,9 +18,3 @@ export type AkronymAnimation =
 export type AkronymVisibility =
     'hidden' | 'visible'
     | 'deleted';
-
-export type AkronymElement = HTMLElement & {
-  animations: Partial<Record<AkronymState | AkronymVisibility, AkronymAnimation>>;
-  visibility: AkronymVisibility;
-  state: AkronymState;
-};

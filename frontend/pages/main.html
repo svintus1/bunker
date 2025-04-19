@@ -1,0 +1,24 @@
+<button id="play-button" data-visibility="hidden" data-hidden>Играть</button>
+<div id="splashscreen" data-state="closed" data-visibility="hidden" data-hidden>
+    <video id="intro-video" src="./static/bunker_intro_optimized.mp4" preload="auto" playsinline muted></video>
+    <audio id="intro-audio" src="./static/bunker_intro.mp3" preload="auto"></audio>
+</div>
+
+<div id="starting-page">
+    <div id="main-menu">
+        <img src="./static/label.png" id="label"/>
+        <input
+        name="username"
+        type="text"
+        placeholder="Имя пользователя"
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="off"
+        spellcheck="false"
+        />
+        <button is="ak-button">Создать игру</button>
+        <button is="ak-button">Присоединиться</button>
+    </div>
+</div>
+
+<script src="js/scripts/main.js" type="module"></script>
