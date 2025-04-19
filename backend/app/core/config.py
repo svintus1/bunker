@@ -30,6 +30,7 @@ class Settings(BaseSettings):
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
     POSTGRES_DB: str
+    POSTGRES_TEST_DB: str = "test_db"
 
     @computed_field
     @property
@@ -43,6 +44,18 @@ class Settings(BaseSettings):
             path=self.POSTGRES_DB
         )
 
+    @computed_field
+    @property
+    def POSTGRES_TEST_DATABASE_URI(self) -> PostgresDsn:
+        return PostgresDsn.build(
+            scheme="postgresql",
+            username=self.POSTGRES_USER,
+            password=self.POSTGRES_PASSWORD,
+            host=self.POSTGRES_HOST,
+            port=self.POSTGRES_PORT,
+            path=self.POSTGRES_TEST_DB
+        )
+        
     REDIS_HOST: str
     REDIS_PORT: int = 6379
     REDIS_PASSWORD: str
@@ -55,6 +68,17 @@ class Settings(BaseSettings):
             password=self.REDIS_PASSWORD,
             host=self.REDIS_HOST,
             port=self.REDIS_PORT
+        )
+
+    @computed_field
+    @property
+    def REDIS_TEST_DATABASE_URI(self) -> RedisDsn:
+        return RedisDsn.build(
+            scheme="redis",
+            password=self.REDIS_PASSWORD,
+            host=self.REDIS_HOST,
+            port=self.REDIS_PORT,
+            path="1" # Use DB 1 for test (0 is prod)
         )
 
 
