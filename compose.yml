@@ -17,22 +17,23 @@ services:
     container_name: backend
     restart: always
     env_file:
-      -  config/.env.backend
-      -  config/.env.pg
-      - ./config/.env.redis
+      - config/.env.backend
+      - config/.env.pg
+      - config/.env.redis
     networks:
       - my_network
     ports:
       - 8000:8000
     depends_on:
       - db
+      - redis
 
   db:
     image: postgres:17
     container_name: postgres_db
     restart: always
     env_file:
-      -  config/.env.pg
+      - config/.env.pg
     networks:
       - my_network
     volumes:

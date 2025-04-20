@@ -1,2 +1,4 @@
 /frontend/js
 config
+# VSCode
+.vscode

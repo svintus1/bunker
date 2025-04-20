@@ -83,3 +83,6 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+if __name__ == "__main__":
+    print(str(settings.REDIS_TEST_DATABASE_URI))

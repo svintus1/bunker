@@ -2,31 +2,38 @@ from typing import Annotated
 
 from fastapi import APIRouter, HTTPException, Path
 
-from app import crud
 from app.models import UserCreate, User
-from app.api.deps import SessionDep
+from app.core.database import PgSessionDep
+from app.api.deps import UserCRUDDep
 
 router = APIRouter(prefix="/users", tags=["users"])
 
 
 @router.post("/create")
-def create_user(session: SessionDep, user_in: UserCreate) -> User:
+def create_user(user_crud: UserCRUDDep, user_in: UserCreate) -> User:
     """Create new user."""
-    user = crud.get_user_by_name(session=session, name=user_in.name)
+    # Check if user with this username already exists
+    user = user_crud.get_user_by_name(name=user_in.name)
     if user:
         raise HTTPException(
             status_code=400,
-            detail="The user with this name already exists in the system"
+            detail={
+                "message": "The user with this name already exists in the system",
+                "existing_user_id": str(user.id)
+            }
         )
 
-    user = crud.create_user(session=session, user_create=user_in)
+    user = user_crud.create_user(user_create=user_in)
+
     return user
 
 @router.get("/{id}")
-def get_user(session: SessionDep, id: Annotated[str, Path(max_length=255)]):
-    user = crud.get_user_by_id(session=session, id=id)
+def get_user(user_crud: UserCRUDDep, id: Annotated[str, Path(max_length=255)]) -> User:
+    user = user_crud.get_user_by_id(id=id)
     if not user:
         raise HTTPException(
             status_code=400,
             detail="The user with this ID is not found"
         )
+
+    return user
