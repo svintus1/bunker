@@ -145,7 +145,6 @@ button:hover, button:focus
         height: 100%;
         padding-left: 300px;
         padding-right: 200px;
-
         display: flex;
         flex-direction: row;
         justify-content: start;
