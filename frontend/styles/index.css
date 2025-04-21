@@ -111,3 +111,63 @@ h1.error
 
   z-index: 2;
 }
+
+button#music-status
+{
+  position: absolute;
+  margin: 50px;
+  bottom: 0;
+  left: 0;
+
+  width: 75px;
+  height: 75px;
+
+  border-radius: 100px;
+}
+
+button#music-status
+svg
+{
+  position: absolute;
+  width: 75%;
+  height: 75%;
+}
+button#music-status
+svg
+path
+{
+  stroke: black;
+  stroke-width: 2;
+
+  transition: stroke 0.25s ease-out;
+}
+
+button#music-status:hover svg path, button#music-status:focus svg path
+{
+  stroke: var(--theme-color);
+  stroke-width: 2;
+}
+
+button#music-status[data-mute="true"]
+svg#pause
+{
+  visibility: visible;
+}
+
+button#music-status[data-mute="true"]
+svg#play
+{
+  visibility: hidden;
+}
+
+button#music-status[data-mute="false"]
+svg#pause
+{
+  visibility: hidden;
+}
+
+button#music-status[data-mute="false"]
+svg#play
+{
+  visibility: visible;
+}
