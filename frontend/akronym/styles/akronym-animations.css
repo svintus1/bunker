@@ -1,11 +1,9 @@
 [data-animation]
 {
-    animation-duration: 1s;
     animation-timing-function: ease;
-    animation-delay: 0s;
     animation-iteration-count: 1;
     animation-fill-mode: forwards;
-    animation-play-state: running;
+    animation-play-state: paused;
 }
 [data-animation="slide-up"]
 {
@@ -43,14 +41,42 @@
 [data-animation="fade-in"]
 {
     animation-name: fade-in;
-    animation-duration: 2s;
 }
 [data-animation="fade-out"]
 {
     animation-name: fade-out;
-    animation-duration: 2s;
 }
 
+[data-animation="modal-window-slide-in"]
+{
+    animation-fill-mode: forwards;
+    animation-name: modal-window-slide-in;
+}
+[data-animation="modal-window-slide-out"]
+{
+    animation-fill-mode: forwards;
+    animation-name: modal-window-slide-out;
+}
+
+@keyframes modal-window-slide-out{
+    0% {
+        bottom: 50%;
+    }
+    100% {
+        bottom: 100%;
+    }
+    
+}
+
+@keyframes modal-window-slide-in{
+    0% {
+        bottom: 100%;
+    }
+    100% {
+        bottom: 50%;
+    }
+    
+}
 @keyframes fade-in{
     0% { opacity: 0; }
     100% { opacity: 1; }

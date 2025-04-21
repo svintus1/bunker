@@ -5,6 +5,8 @@ type Route = {
 };
 
 class Index {
+  public page: any;
+
   private routes: Record<string, Route> = {
     main: {
       script: () => import('./main.js'),
@@ -58,7 +60,7 @@ class Index {
     this.loadStyle(route.style);
 
     const module = await route.script();
-    module.init();
+    this.page = module.init();
   }
 
   private getPageFromPath(path: string): string {
@@ -83,4 +85,4 @@ class Index {
 }
 
 // Инициализация
-new Index();
+(window as any).index = new Index();
