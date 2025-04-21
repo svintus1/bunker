@@ -21,21 +21,6 @@
 
         width: 100%;
         height: 100%;
-
-<<<<<<< Updated upstream
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    #starting-page
-    {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        padding-left: 300px;
-        padding-right: 200px;
-
         display: flex;
         flex-direction: row;
         justify-content: start;
@@ -67,13 +52,11 @@
 
             backdrop-filter: blur(10px);
             background-color: rgba(0, 0, 0, 0.2);
-=======
         & #play-button{
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
->>>>>>> Stashed changes
         }
 
         & #splashscreen
