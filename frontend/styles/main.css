@@ -1,150 +1,26 @@
-[is="ak-splash"]
-{
-    position: fixed;
-    top: 0;
-    left: 0;
+.page#main {
+    position: absolute;
 
     width: 100%;
     height: 100%;
 
-    background-color: var(--main-color);
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    z-index: 999;
-}
-
-button
-{
-    display: block;
-    width: 200px;
-    height: 56px;
-
-    background-color: var(--theme-color);
-    background-position: center;
-    background-size: 100%;
-    background-repeat: no-repeat;
-
-    border: 2px solid var(--theme-color);
-
-    color: black;
-    font-size: 32px;
-    font-weight: bold;
-    font-family: inherit;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    cursor: pointer;
-
-    transition: background-color 0.25s ease-out, color 0.25s ease-out;
-}
-
-input[type="text"]
-{
-    display: block;
-    width: 200px;
-    height: 64px;
-
     background-color: black;
+    background-image: url(../static/bg_starting_page_2.jpeg);
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
 
-    border: 2px solid var(--theme-color);
-    border-radius: 20px;
-
-    color: var(--theme-color);
-    font-size: 32px;
-    font-weight: bold;
-    font-family: inherit;
-
     display: flex;
-    justify-content: center;
+    flex-direction: row;
+    justify-content: start;
     align-items: center;
 
-    cursor: text;
-
-    transition: background-color 0.25s ease-out, color 0.25s ease-out;
-}
-
-input[type="text"]::selection
-{
-    color: var(--theme-color);
-    background-color: black;
-}
-
-input[type="text"]:hover, input[type="text"]:focus
-{
-    background-color: var(--theme-color);
-    color: black;
-    outline: none;
-}
-
-input[type="text"]::placeholder
-{
-    color: var(--theme-color);
-}
-input[type="text"]:hover::placeholder, input[type="text"]:focus::placeholder
-{
-    color: black;
-}
-
-::selection
-{
-    color: black;
-    background-color: var(--theme-color);
-}
-
-button:hover, button:focus
-{
-    background-color: black;
-    color: var(--theme-color);
-    outline: none;
-}
-
-.page#main
-{
-    width: 100%;
-    height: 100%;
-
-    display: flex;
-}
-
-    #play-button
-    {
+    & #intro {
         position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+        z-index: 6;
 
-        z-index: 2;
-    }
-
-    #splashscreen
-    {
-        position: absolute;
         width: 100%;
         height: 100%;
-        z-index: 3;
-        background-color: black;
-
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    #starting-page
-    {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        padding-left: 300px;
-        padding-right: 200px;
         display: flex;
         flex-direction: row;
         justify-content: start;
@@ -176,30 +52,56 @@ button:hover, button:focus
 
             backdrop-filter: blur(10px);
             background-color: rgba(0, 0, 0, 0.2);
+        & #play-button{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
 
-            #main-menu
-            input
-            {
-                width: 300px;
-                height: 48px;
-                font-size: inherit;
-                font-weight: inherit;
-                text-align: center;
-            }
+        & #splashscreen
+        {
+            position: absolute;
 
-            #main-menu
-            button
-            {
-                width: 250px;
-                font-size: inherit;
-                font-weight: inherit;
-            }
+            width: 100%;
+            height: 100%;
 
-            #main-menu
-            #label
-            {
-                width: 500px;
-                font-size: inherit;
-                font-weight: inherit;
-            }
+            background-color: black;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+
+    & #main-menu {
+        position: relative;
+
+        height: 100%;
+        margin-left: 300px;
+        padding-left: 30px;
+        padding-right: 30px;
+
+        backdrop-filter: blur(10px);
+        background-color: rgba(0, 0, 0, 0.2);
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 50px;
+    
+
+        & button {
+            width: 250px;
+        }
+
+        & #label {
+            width: 500px;
+        }
+    }
+
+    .modal-window#enter-id{
+        display: flex
+    }
+}

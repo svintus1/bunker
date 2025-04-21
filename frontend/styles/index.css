@@ -1,173 +1,326 @@
 @import url(../akronym/styles/akronym-animations.css);
 
-:root
-{
-  --main-color: black;
-  --less-main-color: #2c2c2c;
-  --secondary-color: white;
-  --less-secondary-color: #dadada;
-  --theme-color: #f8ba00;
+/* ==================== FONTS ==================== */
+@font-face {
+    font-family: 'TheCrewPro';
+    src: url('../static/fonts/TheCrewPro.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
 }
 @font-face {
-  font-family: 'TheCrewPro';
-  src: url('../static/fonts/TheCrewPro.ttf')  format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'Cornerita';
-  src: url('../static//fonts/Cornerita-Thin.ttf') format('truetype');
-  font-weight: 100;
-  font-style: normal;
+    font-family: 'Cornerita';
+    src: url('../static//fonts/Cornerita-Thin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: normal;
 }
 
 @font-face {
-  font-family: 'Cornerita';
-  src: url('../static//fonts/Cornerita-Regular.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
+    font-family: 'Cornerita';
+    src: url('../static//fonts/Cornerita-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
 }
 
 @font-face {
-  font-family: 'Cornerita';
-  src: url('../static//fonts/Cornerita-Bold.ttf') format('truetype');
-  font-weight: 700;
-  font-style: normal;
+	font-family: 'Cornerita';
+    src: url('../static//fonts/Cornerita-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
 }
 
 @font-face {
-  font-family: 'Cornerita';
-  src: url('../static//fonts/Cornerita-Black.ttf') format('truetype');
-  font-weight: 900;
-  font-style: normal;
+    font-family: 'Cornerita';
+    src: url('../static//fonts/Cornerita-Black.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
 }
 
 @font-face {
-  font-family: 'Cornerita VF';
-  src: url('../static//fonts/Cornerita-VF.ttf') format('truetype');
-  font-weight: 100 900;
-  font-style: normal;
+    font-family: 'Cornerita VF';
+    src: url('../static//fonts/Cornerita-VF.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: normal;
+}
+/* ==================== FONTS ==================== */
+
+/* ==================== GENERAL ==================== */
+:root {
+    --main-color: black;
+    --less-main-color: #2c2c2c;
+    --secondary-color: white;
+    --less-secondary-color: #dadada;
+    --theme-color: #f8ba00;
+
+    --hover-transition: 0.25s ease-out;
 }
 
-html
-{
-  height: 100%;
+html {
+    height: 100%;
 
-  color: var(--secondary-color);
-  font-family: 'Cornerita VF', sans-serif;
+    font-family: 'Cornerita VF', sans-serif;
+	font-size: 32px;
+    color: var(--secondary-color);
 }
 
-body
-{
-  height: 100%;
-  background-color: var(--main-color);
+body {
+    height: 100%;
+    
+    background-color: var(--main-color);
 }
 
-*
-{
-  margin: 0;
-  border: none;
-  padding: 0;
-  box-sizing: border-box;
+* {
+    margin: 0;
+    border: none;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-[data-hidden]
-{
-  visibility: hidden;
+[data-hidden] {
+    visibility: hidden;
 }
 
-#cover
-{
-  position: fixed;
-  width: 100%;
-  height: 100%;
+::selection {
+    background-color: var(--main-color);
+    color: var(--theme-color);
+}
+/* ==================== GENERAL ==================== */
 
-  background-color: black;
+/* ==================== MODAL WINDOW ELEMENT ==================== */
+.modal-window-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 5;
 
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
+    width: 100%;
+    height: 100%;
 
-  z-index: 1;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+}
+.modal-window {
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    transform: translate(-50%, 50%);
+    z-index: 10;
+
+    width: 400px;
+    border: solid 2px var(--theme-color);
+
+    background-color: var(--main-color);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    overflow: visible;
+
+    & #bar{
+        width: 100%;
+        height: 36px;
+        
+        background-color: var(--theme-color);
+
+        color: var(--main-color);
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        & button#close{
+            position: absolute;
+            top: 0;
+            right: 0;
+
+            width: unset;
+            height: 38px;
+            aspect-ratio: 1 / 1;
+            border: none;
+            margin-top: -2px;
+            margin-right: -2px;
+
+            & svg {
+                width: 100%;
+                height: 100%;
+            }
+        }
+    }
+
+    & #content {
+        width: 100%;
+        height: 100%;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        padding-left: 30px;
+        padding-right: 30px;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 50px;
+    }
+}
+/* ==================== MODAL WINDOW ELEMENT ==================== */
+
+/* ==================== BUTTON ELEMENT ==================== */
+button {
+    width: 200px;
+    height: 56px;
+	border: 2px solid var(--theme-color);
+
+	background-color: var(--theme-color);
+	cursor: pointer;
+
+	font-family: inherit;
+    font-size: inherit;
+    font-weight: bold;
+    color: var(--main-color);
+	text-align: center;
+
+	transition: background-color var(--hover-transition), color var(--hover-transition);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+	&:is(:hover, :focus){
+		background-color: black;
+		outline: none;
+
+		color: var(--theme-color);
+	}
+
+	&::selection{
+		background-color: var(--theme-color);
+
+		color: black;
+	}
+
+    & svg {
+        position: absolute;
+
+        width: 75%;
+        height: 75%;
+    }
+
+    & path {
+        stroke: var(--main-color);
+        stroke-width: 2px;
+
+        fill: var(--main-color);
+
+        transition: fill var(--hover-transition), stroke var(--hover-transition);
+    }
+
+    &:is(:hover, :focus) path {
+        stroke: var(--theme-color);
+        stroke-width: 2;
+
+        fill: var(--theme-color);
+    }
+}
+/* ==================== BUTTON ELEMENT ==================== */
+
+/* ==================== INPUT ELEMENT ==================== */
+input[type="text"] {
+	width: 300px;
+	height: 48px;
+	border: 2px solid var(--theme-color);
+
+    background-color: var(--main-color);
+    border-radius: 20px;
+	cursor: text;
+
+	font-family: inherit;
+	font-size: inherit;
+    font-weight: bold;
+    color: var(--theme-color);
+	text-align: center;
+
+	transition: background-color var(--hover-transition), color var(--hover-transition);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+	&::placeholder {
+		color: var(--theme-color);
+
+		transition: color var(--hover-transition);
+	}
+
+	&:is(:hover, :focus)::placeholder {
+		color: var(--main-color);
+	}
+
+	&::selection {
+		background-color: var(--main-color);
+
+		color: var(--theme-color);
+	}
+
+	&:is(:hover, :focus) {
+		background-color: var(--theme-color);
+		outline: none;
+
+		color: var(--main-color);
+	}
+
+	&:is(:hover, :focus)::placeholder {
+		color: var(--main-color);
+	}
+}
+/* ==================== INPUT ELEMENT ==================== */
+
+/* ==================== ROOT LEVEL ==================== */
+#cover {
+    position: fixed;
+    z-index: 5;
+
+    width: 100%;
+    height: 100%;
+
+    background-color: var(--main-color);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-#root
-{
-  width: 100%;
-  height: 100%;
+#root {
+    width: 100%;
+    height: 100%;
 }
 
-h1.error
-{
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 32px;
-  font-weight: bold;
-  font-family: 'TheCrewPro', sans-serif;
-  color: var(--theme-color);
+button#music-status {
+    position: absolute;
+    bottom: 0;
+    left: 0;
 
-  z-index: 2;
+    width: 75px;
+    height: 75px;
+    margin: 50px;
+
+    border-radius: 100px;
+    
+    &[data-mute="true"] svg#pause,
+    &[data-mute="false"] svg#play {
+        visibility: visible;
+    }
+    &[data-mute="true"] svg#play,
+    &[data-mute="false"] svg#pause {
+        visibility: hidden;
+    }
+
+    & path{
+        fill: none;
+    }
+
+    &:is(:hover, :focus) path {
+        fill: none;
+    }
 }
-
-button#music-status
-{
-  position: absolute;
-  margin: 50px;
-  bottom: 0;
-  left: 0;
-
-  width: 75px;
-  height: 75px;
-
-  border-radius: 100px;
-}
-
-button#music-status
-svg
-{
-  position: absolute;
-  width: 75%;
-  height: 75%;
-}
-button#music-status
-svg
-path
-{
-  stroke: black;
-  stroke-width: 2;
-
-  transition: stroke 0.25s ease-out;
-}
-
-button#music-status:hover svg path, button#music-status:focus svg path
-{
-  stroke: var(--theme-color);
-  stroke-width: 2;
-}
-
-button#music-status[data-mute="true"]
-svg#pause
-{
-  visibility: visible;
-}
-
-button#music-status[data-mute="true"]
-svg#play
-{
-  visibility: hidden;
-}
-
-button#music-status[data-mute="false"]
-svg#pause
-{
-  visibility: hidden;
-}
-
-button#music-status[data-mute="false"]
-svg#play
-{
-  visibility: visible;
-}
+/* ==================== ROOT LEVEL ==================== */
