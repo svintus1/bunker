@@ -118,8 +118,10 @@ body {
     overflow: visible;
 
     & #bar{
+        position: relative;
         width: 100%;
         height: 36px;
+        border: none;
         
         background-color: var(--theme-color);
 
@@ -135,11 +137,9 @@ body {
             right: 0;
 
             width: unset;
-            height: 38px;
+            height: 100%;
             aspect-ratio: 1 / 1;
             border: none;
-            margin-top: -2px;
-            margin-right: -2px;
 
             & svg {
                 width: 100%;
@@ -151,8 +151,8 @@ body {
     & #content {
         width: 100%;
         height: 100%;
-        padding-top: 50px;
-        padding-bottom: 50px;
+        padding-top: 25px;
+        padding-bottom: 25px;
         padding-left: 30px;
         padding-right: 30px;
 
@@ -160,13 +160,14 @@ body {
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        gap: 50px;
+        gap: 25px;
     }
 }
 /* ==================== MODAL WINDOW ELEMENT ==================== */
 
 /* ==================== BUTTON ELEMENT ==================== */
 button {
+    position: relative;
     width: 200px;
     height: 56px;
 	border: 2px solid var(--theme-color);

@@ -27,31 +27,10 @@
         align-items: center;
 
         background-color: black;
-        background-image: url(../static/bg_starting_page_2.jpeg);
         background-position: center;
         background-size: cover;
         background-repeat: no-repeat;
-    }
-
-        #starting-page
-        #main-menu
-        {
-            position: relative;
-            height: 100%;
-            padding-left: 30px;
-            padding-right: 30px;
-
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 50px;
-
-            font-size: 28px;
-            font-weight: bold;
-
-            backdrop-filter: blur(10px);
-            background-color: rgba(0, 0, 0, 0.2);
+    
         & #play-button{
             position: absolute;
             top: 50%;
