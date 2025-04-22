@@ -1,0 +1,16 @@
+name: Lint
+
+on:
+  push:
+    branches: [ 'feature/**' ]
+  pull_request:
+    branches: [ 'feature/**' ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/ruff-action@v3
+        with:
+            src: ./backend
