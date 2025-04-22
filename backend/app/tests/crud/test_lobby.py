@@ -24,7 +24,6 @@ def test_create_lobby(
     assert lobby.name == lobby_name
     assert lobby.creator_id == user.id
     assert lobby.status == "waiting"
-    assert lobby.player_ids == [user.id]
 
 def test_get_lobby(
     user_crud: UserCRUD,
@@ -82,6 +81,8 @@ def test_delete_lobby(
     lobby_in = LobbyCreate(name=lobby_name, creator_id=user.id)
     lobby = lobby_crud.create_lobby(lobby_in)
     
+    assert lobby
+    assert lobby.pk
     # Test deleting lobby
     success = lobby_crud.delete_lobby(lobby)
     assert success

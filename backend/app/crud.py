@@ -62,6 +62,16 @@ class PlayerCRUD:
             logger.error(f"Error retrieving player {player_pk}: {str(e)}")
             return None
 
+    def update_player(self, player: Player) -> bool:
+        """Update player in Redis."""
+        try:
+            player.save()
+            logger.info(f"Updated player {player.pk}")
+            return True
+        except Exception as e:
+            logger.error(f"Failed to update player {getattr(player, 'pk', None)}: {str(e)}")
+            return False
+
     def delete_player(self, player_pk: uuid.UUID) -> bool:
         """Delete player from Redis."""
         try:
@@ -82,10 +92,9 @@ class LobbyCRUD:
         """Create new lobby and save to Redis."""
         try:
             lobby_data = lobby_in.model_dump()
-            lobby_data["player_ids"] = [lobby_in.creator_id]
-            lobby = Lobby(**lobby_data)
+            lobby = Lobby(**lobby_data, player_ids=[])
             lobby.save()
-            logger.info(f"Created new lobby with creator {lobby_in.creator_id}")
+            logger.info(f"Created new lobby. lobby.pk: {lobby.pk}")
             return lobby
         except Exception as e:
             logger.error(f"Failed to create lobby: {str(e)}")

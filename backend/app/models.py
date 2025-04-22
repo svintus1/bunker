@@ -40,7 +40,7 @@ class Lobby(LobbyCreate):
     Lobby always has at least one player (creator)."""
 
     status: Literal["waiting", "playing", "finishing"] = "waiting"
-    player_ids: list[uuid.UUID]
+    player_ids: list[str]
 
 
 class Player(BaseJsonModel):
@@ -50,5 +50,5 @@ class Player(BaseJsonModel):
     Player contains session-specific data for the game."""
 
     user: User
-    lobby_id: uuid.UUID | None = None
+    lobby_id: str | None = None
 

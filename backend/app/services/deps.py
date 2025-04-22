@@ -1,14 +1,18 @@
 from typing import Annotated
 from fastapi import Depends
 from redis import Redis
-from app.crud import LobbyCRUD, PlayerCRUD
-from app.core.database import RedisConnectionDep
+from app.crud import LobbyCRUD, PlayerCRUD, UserCRUD
+from app.core.database import RedisConnectionDep, PgSessionDep
 
-def get_lobby_crud_service(redis: RedisConnectionDep) -> LobbyCRUD:
+def get_lobby_crud(redis: RedisConnectionDep) -> LobbyCRUD:
     return LobbyCRUD(redis)
 
-def get_player_crud_service(redis: RedisConnectionDep) -> PlayerCRUD:
+def get_player_crud(redis: RedisConnectionDep) -> PlayerCRUD:
     return PlayerCRUD(redis)
 
-ServiceLobbyCRUDDep = Annotated[LobbyCRUD, Depends(get_lobby_crud_service)]
-ServicePlayerCRUDDep = Annotated[PlayerCRUD, Depends(get_player_crud_service)]
+def get_user_crud(db: PgSessionDep) -> UserCRUD:
+    return UserCRUD(db)
+
+LobbyCRUDDep = Annotated[LobbyCRUD, Depends(get_lobby_crud)]
+PlayerCRUDDep = Annotated[PlayerCRUD, Depends(get_player_crud)]
+UserCRUDDep = Annotated[UserCRUD, Depends(get_user_crud)]

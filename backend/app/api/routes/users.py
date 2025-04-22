@@ -1,4 +1,5 @@
 from typing import Annotated
+import uuid
 
 from fastapi import APIRouter, HTTPException, Path
 
@@ -19,7 +20,7 @@ def create_user(user_crud: UserCRUDDep, user_in: UserCreate) -> User:
             status_code=400,
             detail={
                 "message": "The user with this name already exists in the system",
-                "existing_user_id": str(user.id)
+                "id": str(user.id)
             }
         )
 
@@ -28,7 +29,7 @@ def create_user(user_crud: UserCRUDDep, user_in: UserCreate) -> User:
     return user
 
 @router.get("/{id}")
-def get_user(user_crud: UserCRUDDep, id: Annotated[str, Path(max_length=255)]) -> User:
+def get_user(user_crud: UserCRUDDep, id: uuid.UUID) -> User:
     user = user_crud.get_user_by_id(id=id)
     if not user:
         raise HTTPException(

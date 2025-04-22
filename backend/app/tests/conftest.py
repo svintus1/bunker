@@ -2,6 +2,7 @@ from collections.abc import Generator
 from typing import Any
 import pytest
 import logging
+from unittest.mock import MagicMock
 
 from fastapi.testclient import TestClient
 from sqlmodel import Session, SQLModel, create_engine
@@ -12,9 +13,10 @@ import redis_om
 
 from app.main import app
 from app.core.config import settings
-from app.core.database import get_pg_session, get_redis_connection
+from app.api.deps import get_user_crud, get_lobby_crud, get_player_crud
 from app.crud import UserCRUD, LobbyCRUD
 from app.models import BaseJsonModel, Lobby, Player
+from app.services.lobby import LobbyService
 
 
 @pytest.fixture(autouse=True)
@@ -30,27 +32,27 @@ def setup_logging():
     )
 
 
-@pytest.fixture(scope="function")
-def client(db: Session) -> Generator[TestClient, None, None]:
-    def get_pg_session_override():
-        return db
+# @pytest.fixture(scope="function")
+# def client(db: Session) -> Generator[TestClient, None, None]:
+#     def get_pg_session_override():
+#         return db
 
-    # def get_redis_connection_override():
-    #     return redis
+#     # def get_redis_connection_override():
+#     #     return redis
     
-    # Override FastAPI dependencies
-    app.dependency_overrides[get_pg_session] = get_pg_session_override
-    # app.dependency_overrides[get_redis_connection] = get_redis_connection_override
+#     # Override FastAPI dependencies
+#     app.dependency_overrides[get_pg_session] = get_pg_session_override
+#     # app.dependency_overrides[get_redis_connection] = get_redis_connection_override
     
-    # Override redis-om default connection
-    # redis_om.redis_om.connections.get_redis_connection = lambda *args, **kwargs: redis
+#     # Override redis-om default connection
+#     # redis_om.redis_om.connections.get_redis_connection = lambda *args, **kwargs: redis
     
-    with TestClient(app) as c:
-        yield c
+#     with TestClient(app) as c:
+#         yield c
     
-    # Clear all overrides
-    app.dependency_overrides.clear()
-    # redis_om.redis_om.connections.get_redis_connection = redis_om.get_redis_connection
+#     # Clear all overrides
+#     app.dependency_overrides.clear()
+#     # redis_om.redis_om.connections.get_redis_connection = redis_om.get_redis_connection
 
 
 @pytest.fixture(scope="session")
@@ -119,3 +121,32 @@ def user_crud(db) -> UserCRUD:
 @pytest.fixture
 def lobby_crud() -> LobbyCRUD:
     return LobbyCRUD()
+
+@pytest.fixture
+def mock_user_crud():
+    return MagicMock()
+
+@pytest.fixture
+def mock_lobby_crud():
+    return MagicMock()
+
+@pytest.fixture
+def mock_player_crud():
+    return MagicMock()
+
+@pytest.fixture
+def api_client(mock_user_crud, mock_lobby_crud, mock_player_crud) -> Generator[TestClient, None, None]:
+    """
+    Provides a FastAPI TestClient with all CRUD dependencies mocked.
+    Use this fixture in API tests that require full dependency override.
+    """
+    from app.main import app
+
+    app.dependency_overrides[get_user_crud] = lambda: mock_user_crud
+    app.dependency_overrides[get_lobby_crud] = lambda: mock_lobby_crud
+    app.dependency_overrides[get_player_crud] = lambda: mock_player_crud
+
+    with TestClient(app) as client:
+        yield client
+
+    app.dependency_overrides.clear()
