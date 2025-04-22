@@ -9,9 +9,11 @@ router = APIRouter(prefix="/lobby", tags=["lobby"])
 
 @router.post("/create")
 def create_lobby(
-    lobby_in: LobbyCreate,
+    name: Annotated[str, Body(title="Lobby name", max_length=255)],
+    creator_id: Annotated[uuid.UUID, Body(title="Creator user UUID")],
     lobby_service: LobbyServiceDep
 ) -> Lobby:
+    lobby_in = LobbyCreate(name=name, creator_id=creator_id)
     return lobby_service.create_lobby(lobby_in)
 
 
