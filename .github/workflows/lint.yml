@@ -14,3 +14,12 @@ jobs:
       - uses: astral-sh/ruff-action@v3
         with:
             src: ./backend
+      - uses: super-linter/super-linter@v7.3.0
+        env:
+          VALIDATE_HTML: true
+          VALIDATE_CSS: true
+          VALIDATE_TYPESCRIPT_ES: true
+          VALIDATE_TYPESCRIPT_PRETTIER: true
+          VALIDATE_TYPESCRIPT_STANDARD: true
+          VALIDATE_PYTHON: true
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
