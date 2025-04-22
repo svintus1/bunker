@@ -14,6 +14,14 @@ services:
     build:
       context: ./backend
       dockerfile: ./Dockerfile
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./backend
+          target: /opt/app/
+          ignore:
+            - ./.gitignore
+            - ./Dockerfile
     container_name: backend
     restart: always
     env_file:
