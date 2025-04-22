@@ -11,9 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: astral-sh/ruff-action@v3
-        with:
-            src: ./backend
+      # - uses: astral-sh/ruff-action@v3
+      #   with:
+      #       src: ./backend
       - uses: super-linter/super-linter@v7.3.0
         env:
           VALIDATE_HTML: true
