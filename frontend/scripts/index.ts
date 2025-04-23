@@ -1,3 +1,4 @@
+import { AkronymAnimator } from '../akronym/scripts/AkronymAnimator.js';
 type Route = {
   script: () => Promise<any>;
   style: string;
@@ -17,9 +18,21 @@ class Index {
       style: 'styles/main.css',
       template: 'pages/main.html',
     },
+    lobby: {
+      script: () => import('./lobby.js'),
+      style: 'styles/lobby.css',
+      template: 'pages/lobby.html',
+    }
   };
 
+  private modalBackdrop: HTMLDivElement;
+  private modalWindow: HTMLDivElement | null = null;
+  private cover: HTMLDivElement;
+
   constructor() {
+    this.modalBackdrop = document.querySelector('.modal-window-backdrop') as HTMLDivElement;
+    this.cover = document.getElementById('cover') as HTMLDivElement;
+
     window.addEventListener('load', this.onRouteChange.bind(this));
     window.addEventListener('popstate', this.onRouteChange.bind(this));
     (window as any).navigateTo = this.navigateTo.bind(this);
@@ -45,11 +58,12 @@ class Index {
     const appContainer = document.getElementById('root');
 
     if (!route || !appContainer) {
-      appContainer!.innerHTML = '<h1 class="error">404 Not Found (successful api request)</h1>';
-      return;
+        appContainer!.innerHTML = '<h1 class="error">404 Not Found (successful api request)</h1>';
+        return;
     }
 
     const template = await this.loadTemplate(route.template);
+    await AkronymAnimator.changeVisibility(this.cover, 'visible', 'fade-in', 1000);
 
     const oldPage = appContainer.querySelector('.page');
     if (oldPage) oldPage.remove();
@@ -59,13 +73,22 @@ class Index {
     pageContainer.id = page;
     pageContainer.innerHTML = template;
 
+    // Extract modal-window and move it to modal-window-backdrop
+    this.modalWindow = pageContainer.querySelector('.modal-window') as HTMLDivElement;
+    if (this.modalWindow) {
+        if (this.modalBackdrop) {
+          this.modalBackdrop.appendChild(this.modalWindow);
+        }
+    }
+
     appContainer.appendChild(pageContainer);
 
     this.loadStyle(route.style);
 
     const module = await route.script() as PageModule;
+    await AkronymAnimator.changeVisibility(this.cover, 'hidden', 'fade-out', 1000);
     this.page = module.init({
-      navigateTo: this.navigateTo.bind(this)
+        navigateTo: this.navigateTo.bind(this)
     });
   }
 
@@ -80,16 +103,13 @@ class Index {
     this.loadPage(page);
   }
 
-  public navigateTo(page: string): void {
+  public navigateTo(page: string): void{
     const currentPage = window.location.pathname.slice(1);
     if (currentPage === page) return;
 
-    console.log('Route navigate:', window.location.pathname);
     history.pushState(null, '', `/${page}`);
+    console.log('Route navigate:', window.location.pathname);
     this.loadPage(page);
-  }
-  public showError(message: string): void {
-    
   }
 }
 

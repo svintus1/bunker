@@ -81,18 +81,22 @@
 @keyframes error-window-slide-in{
     0% {
         top: 0%;
+        opacity: 0;
     }
     100% {
         top: 10%;
+        opacity: 1;
     }
     
 }
 @keyframes error-window-slide-out{
     0% {
         top: 10%;
+        opacity: 1;
     }
     100% {
         top: 0%;
+        opacity: 0;
     }
     
 }
