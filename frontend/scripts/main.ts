@@ -89,18 +89,6 @@ class MainMenu {
         AkronymEventRouter.add(this.errorWindow, "dblclick", () => {
             AkronymAnimator.changeVisibility(this.errorWindow, "hidden", 'error-window-slide-out', 500);
         });
-        AkronymEventRouter.add(this.musicStatus, "click", () => {
-            if (this.ambientMusic.paused)
-            {
-                this.ambientMusic.play()
-                this.musicStatus.setAttribute('data-mute', "false");
-            }
-            else
-            {
-                this.ambientMusic.pause()
-                this.musicStatus.setAttribute('data-mute', "true");
-            }
-        });
 
         this.buttons.forEach((button) => {
             AkronymEventRouter.add(button, "click", () => {
@@ -205,7 +193,6 @@ class MainMenu {
     private skipIntro(){
         AkronymAnimator.changeVisibility(this.cover, "hidden", 'fade-out', 0);
         AkronymAnimator.changeVisibility(this.intro, "deleted", 'fade-out', 0);
-        this.musicStatus.setAttribute('data-mute', "true");
         this.showMenu();
     }
 
@@ -236,7 +223,7 @@ class MainMenu {
     }
 
     private showMenu(): void {
-        AkronymAnimator.changeVisibility(this.menu, "visible", 'fade-in', 2000, 0, true, 'slide-up', 1000);
+        AkronymAnimator.changeVisibility(this.menu, "visible", 'fade-in', 1800, 0, true, 'slide-up', 1000);
         AkronymAnimator.changeVisibility(this.musicStatus, "visible", 'fade-in', 2000, 800);
         AkronymEventRouter.add(this.menu, "animationendvisible", this.initMenuListeners.bind(this), true);
     }

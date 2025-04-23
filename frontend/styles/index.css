@@ -118,6 +118,7 @@ body {
 
     border-radius: 20px;
     background-color: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
 }
 /* ==================== ERROR WINDOW ELEMENT ==================== */
 
@@ -272,6 +273,7 @@ input[type="text"] {
     background-color: var(--main-color);
     border-radius: 20px;
 	cursor: text;
+    user-select: none;
 
 	font-family: inherit;
 	font-size: inherit;

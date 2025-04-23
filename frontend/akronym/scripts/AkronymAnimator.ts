@@ -41,7 +41,7 @@ export class AkronymAnimator {
               false
             );
             resolve(null);
-          }, index * CASCADE_ANIMATION_DELAY)
+          }, (index + 1) * CASCADE_ANIMATION_DELAY)
         )
       );
 

@@ -1,4 +1,5 @@
 import { AkronymAnimator } from '../akronym/scripts/AkronymAnimator.js';
+import { AkronymEventRouter } from '../akronym/scripts/AkronymEventRouter.js';
 type Route = {
   script: () => Promise<any>;
   style: string;
@@ -28,13 +29,29 @@ class Index {
   private modalBackdrop: HTMLDivElement;
   private modalWindow: HTMLDivElement | null = null;
   private cover: HTMLDivElement;
+  private musicStatus: HTMLButtonElement;
+  private ambientMusic: HTMLAudioElement;
 
   constructor() {
     this.modalBackdrop = document.querySelector('.modal-window-backdrop') as HTMLDivElement;
     this.cover = document.getElementById('cover') as HTMLDivElement;
+    this.musicStatus = document.getElementById('music-status') as HTMLButtonElement;
+    this.ambientMusic = document.getElementById('ambient-music') as HTMLAudioElement;
 
-    window.addEventListener('load', this.onRouteChange.bind(this));
-    window.addEventListener('popstate', this.onRouteChange.bind(this));
+    window.addEventListener('load', this.onRouteChange.bind(this, false));
+    window.addEventListener('popstate', this.onRouteChange.bind(this, true));
+    AkronymEventRouter.add(this.musicStatus, "click", () => {
+        if (this.ambientMusic.paused)
+        {
+            this.ambientMusic.play()
+            this.musicStatus.setAttribute('data-mute', "false");
+        }
+        else
+        {
+            this.ambientMusic.pause()
+            this.musicStatus.setAttribute('data-mute', "true");
+        }
+    });
     (window as any).navigateTo = this.navigateTo.bind(this);
   }
 
@@ -53,19 +70,19 @@ class Index {
     return response.text();
   }
 
-  private async loadPage(page: string): Promise<void> {
+  private async loadPage(page: string, transition: boolean): Promise<void> {
     const route = this.routes[page];
     const appContainer = document.getElementById('root');
 
-    if (!route || !appContainer) {
-        appContainer!.innerHTML = '<h1 class="error">404 Not Found (successful api request)</h1>';
-        return;
+    this.musicStatus.setAttribute('data-mute', "true");
+    this.ambientMusic.pause();
+    const template = await this.loadTemplate(route.template);
+    
+    if (transition){
+      await AkronymAnimator.changeVisibility(this.cover, 'visible', 'fade-in', 1000);
     }
 
-    const template = await this.loadTemplate(route.template);
-    await AkronymAnimator.changeVisibility(this.cover, 'visible', 'fade-in', 1000);
-
-    const oldPage = appContainer.querySelector('.page');
+    const oldPage = appContainer?.querySelector('.page');
     if (oldPage) oldPage.remove();
 
     const pageContainer = document.createElement('div');
@@ -81,12 +98,14 @@ class Index {
         }
     }
 
-    appContainer.appendChild(pageContainer);
+    appContainer?.appendChild(pageContainer);
 
     this.loadStyle(route.style);
 
     const module = await route.script() as PageModule;
-    await AkronymAnimator.changeVisibility(this.cover, 'hidden', 'fade-out', 1000);
+    if (transition) {
+      await AkronymAnimator.changeVisibility(this.cover, 'hidden', 'fade-out', 1000);
+    }
     this.page = module.init({
         navigateTo: this.navigateTo.bind(this)
     });
@@ -97,19 +116,39 @@ class Index {
     return cleanPath || 'main';
   }
 
-  private onRouteChange(): void {
+  private onRouteChange(isPopState: boolean): void {
     console.log('Route changed:', window.location.pathname);
     const page = this.getPageFromPath(window.location.pathname);
-    this.loadPage(page);
+
+    const navigationEntries = performance.getEntriesByType('navigation') as PerformanceNavigationTiming[];
+    const navigationType = navigationEntries[0].type;
+    if (isPopState){
+      console.log('Navigation type: back-forward');
+    }
+    else {
+      console.log('Navigation type:', navigationType);
+    }
+
+    if (page === 'main' && navigationType === 'navigate') {
+      this.loadPage('main', false);
+    }
+    else if (navigationType == 'navigate') {
+      console.log('Illegal change of route, loading main page');
+      history.pushState(null, '', '/main');
+      this.loadPage('main', false);
+    }
+    else {
+      this.loadPage(page, true);
+    }
   }
 
   public navigateTo(page: string): void{
     const currentPage = window.location.pathname.slice(1);
     if (currentPage === page) return;
-
     history.pushState(null, '', `/${page}`);
     console.log('Route navigate:', window.location.pathname);
-    this.loadPage(page);
+    console.log('Navigation type: routing');
+    this.loadPage(page, true);
   }
 }
 
