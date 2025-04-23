@@ -103,12 +103,12 @@ class Index {
     this.loadStyle(route.style);
 
     const module = await route.script() as PageModule;
-    if (transition) {
-      await AkronymAnimator.changeVisibility(this.cover, 'hidden', 'fade-out', 1000);
-    }
     this.page = module.init({
         navigateTo: this.navigateTo.bind(this)
     });
+    if (transition) {
+      await AkronymAnimator.changeVisibility(this.cover, 'hidden', 'fade-out', 1000);
+    }
   }
 
   private getPageFromPath(path: string): string {

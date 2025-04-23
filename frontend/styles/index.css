@@ -349,11 +349,11 @@ button#music-status {
     
     &[data-mute="true"] svg#pause,
     &[data-mute="false"] svg#play {
-        visibility: visible;
+        opacity: 1;
     }
     &[data-mute="true"] svg#play,
     &[data-mute="false"] svg#pause {
-        visibility: hidden;
+        opacity: 0;
     }
 
     & path{
