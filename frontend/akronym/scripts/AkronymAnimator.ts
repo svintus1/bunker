@@ -15,6 +15,11 @@ export class AkronymAnimator {
     if (current === visibility){
       return
     };
+    const currentAnimation = element.dataset.animation ?? 'none';
+    if (currentAnimation !== 'none') {
+      console.log('Animation is already running. Please wait for it to finish before changing visibility.');
+      return;
+    }
   
     element.dataset.visibility = visibility;
   
@@ -38,9 +43,14 @@ export class AkronymAnimator {
     }
   }
 
-  static changeState(element: any, state: AkronymState, animation: AkronymAnimation, duration: number, delay: number): void {
+  static changeState(element: any, state: AkronymState, animation: AkronymAnimation, duration: number = 0, delay: number = 0): void {
     const current = element.dataset.state ?? 'idle';
     if (current === state) return;
+    const currentAnimation = element.dataset.animation ?? 'none';
+    if (currentAnimation !== 'none') {
+      console.log('Animation is already running. Please wait for it to finish before changing state.');
+      return;
+    }
 
     element.dataset.state = state;
 
@@ -51,8 +61,8 @@ export class AkronymAnimator {
     element.dataset.animation = animation;
     element.style.animationDuration = duration + 'ms';
     setTimeout(() => {
+      element.style.animationPlayState = 'running';
       if (element.dataset.visibility == 'visible'){
-        element.style.animationPlayState = 'running';
         element.removeAttribute('data-hidden');
       }
     }, delay);
@@ -61,6 +71,9 @@ export class AkronymAnimator {
       element.dataset.animation = 'none';
       if (element.dataset.visibility == 'hidden'){
         element.dataset.hidden = 'true';
+      }
+      if (element.dataset.state == 'error' || element.dataset.state == 'success'){
+        element.dataset.state = 'idle';
       }
       element.dispatchEvent(new CustomEvent("animationend" + target.toString()))
       if (element.dataset.visibility == 'deleted') element.remove();

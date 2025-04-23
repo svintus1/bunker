@@ -4,6 +4,10 @@ type Route = {
   template: string;
 };
 
+type PageModule = {
+  init: (ctx: { navigateTo: (path: string) => void }) => any
+}
+
 class Index {
   public page: any;
 
@@ -41,7 +45,7 @@ class Index {
     const appContainer = document.getElementById('root');
 
     if (!route || !appContainer) {
-      appContainer!.innerHTML = '<h1 class="error">404 Not Found</h1>';
+      appContainer!.innerHTML = '<h1 class="error">404 Not Found (successful api request)</h1>';
       return;
     }
 
@@ -59,8 +63,10 @@ class Index {
 
     this.loadStyle(route.style);
 
-    const module = await route.script();
-    this.page = module.init();
+    const module = await route.script() as PageModule;
+    this.page = module.init({
+      navigateTo: this.navigateTo.bind(this)
+    });
   }
 
   private getPageFromPath(path: string): string {
@@ -74,13 +80,16 @@ class Index {
     this.loadPage(page);
   }
 
-  private navigateTo(page: string): void {
+  public navigateTo(page: string): void {
     const currentPage = window.location.pathname.slice(1);
     if (currentPage === page) return;
 
     console.log('Route navigate:', window.location.pathname);
     history.pushState(null, '', `/${page}`);
     this.loadPage(page);
+  }
+  public showError(message: string): void {
+    
   }
 }
 
