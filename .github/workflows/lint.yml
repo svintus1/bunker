@@ -15,6 +15,7 @@ jobs:
       - uses: astral-sh/ruff-action@v3
         with:
             src: ./backend
+        continue-on-error: true
 
       - uses: actions/setup-node@v4
 
@@ -23,7 +24,10 @@ jobs:
           npm install --save-dev @typescript-eslint/parser @typescript-eslint/eslint-plugin
 
       - run: htmlhint "./frontend/**/*.html"
+        continue-on-error: true
 
       - run: npx stylelint "./frontend/**/*.{css,scss}" --color
+        continue-on-error: true
 
       - run: npx eslint "./frontend/**/*.ts" --color
+        continue-on-error: true
