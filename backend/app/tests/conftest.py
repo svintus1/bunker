@@ -8,15 +8,12 @@ from fastapi.testclient import TestClient
 from sqlmodel import Session, SQLModel, create_engine
 from sqlalchemy import Engine
 from sqlalchemy_utils import database_exists, create_database, drop_database
-from redis import Redis
-import redis_om
 
 from app.main import app
 from app.core.config import settings
 from app.api.deps import get_user_crud, get_lobby_crud, get_player_crud
 from app.crud import UserCRUD, LobbyCRUD
-from app.models import BaseJsonModel, Lobby, Player
-from app.services.lobby import LobbyService
+from app.models import BaseJsonModel
 
 
 @pytest.fixture(autouse=True)
@@ -140,7 +137,6 @@ def api_client(mock_user_crud, mock_lobby_crud, mock_player_crud) -> Generator[T
     Provides a FastAPI TestClient with all CRUD dependencies mocked.
     Use this fixture in API tests that require full dependency override.
     """
-    from app.main import app
 
     app.dependency_overrides[get_user_crud] = lambda: mock_user_crud
     app.dependency_overrides[get_lobby_crud] = lambda: mock_lobby_crud

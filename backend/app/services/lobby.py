@@ -1,9 +1,4 @@
-from uuid import UUID
-
-from redis import Redis
-from sqlmodel import Session
-
-from app.models import Lobby, LobbyCreate, User
+from app.models import Lobby, LobbyCreate
 from app.services.deps import LobbyCRUDDep, PlayerCRUDDep, UserCRUDDep
 
 
