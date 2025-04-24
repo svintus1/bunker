@@ -1,9 +1,8 @@
 import uuid
 
 from fastapi.testclient import TestClient
-from unittest.mock import MagicMock
 
-from app.models import User, UserCreate
+from app.models import User
 from app.core.config import settings
 
 def test_create_user_success(api_client: TestClient, mock_user_crud):

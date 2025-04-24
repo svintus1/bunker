@@ -1,10 +1,8 @@
 import uuid
-import pytest
-from unittest.mock import MagicMock
 
 from fastapi.testclient import TestClient
 
-from app.models import Lobby, LobbyCreate, User, Player
+from app.models import Lobby, User, Player
 from app.core.config import settings
 
 

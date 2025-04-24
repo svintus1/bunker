@@ -1,9 +1,9 @@
 import uuid
 from typing import Annotated
-from fastapi import APIRouter, Depends, Body, HTTPException
+from fastapi import APIRouter, Body, HTTPException
 
 from app.api.deps import LobbyServiceDep, PlayerCRUDDep, UserCRUDDep
-from app.models import LobbyCreate, Lobby, User
+from app.models import LobbyCreate, Lobby
 
 router = APIRouter(prefix="/lobby", tags=["lobby"])
 
@@ -28,13 +28,13 @@ def join_lobby(
     user = user_crud.get_user_by_id(user_id)
     if not user:
         raise HTTPException(status_code=400,
-                            detail="The user with this ID is not found")
+                             detail="The user with this ID is not found")
     player = player_crud.create_player(user)
     if not player:
         raise HTTPException(status_code=500,
-                            detail=f"Failed to create player from user")
+                            detail="Failed to create player from user")
     lobby = lobby_service.join_lobby(lobby_id, player.pk)
     if not lobby:
         raise HTTPException(status_code=500,
-                            detail=f"Failed to join lobby")
+                            detail="Failed to join lobby")
     return lobby
