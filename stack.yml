@@ -10,9 +10,7 @@ services:
       - my_network
     
   backend:
-    build:
-      context: ./backend
-      dockerfile: ./Dockerfile
+    image: 10.0.10.12:5000/backend:latest
     restart: always
     env_file:
       - config/.env.backend
