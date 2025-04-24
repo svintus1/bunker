@@ -60,9 +60,9 @@ services:
   redis:
     image: redis/redis-stack:latest
     restart: always
-    secrets:
-      - source: redis.conf
-        target: /etc/redis/redis.conf
+    # secrets:
+    #   - source: redis.conf
+    #     target: /etc/redis/redis.conf
     environment:
       REDIS_ARGS: "--requirepass mypassword"
     networks:
