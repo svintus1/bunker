@@ -58,6 +58,76 @@
     animation-name: modal-window-slide-out;
 }
 
+[data-animation="error"]
+{
+    animation-name: error;
+}
+
+[data-animation="success"]
+{
+    animation-name: success;
+}
+
+[data-animation="error-window-slide-in"]
+{
+    animation-name: error-window-slide-in;
+}
+
+[data-animation="error-window-slide-out"]
+{
+    animation-name: error-window-slide-out;
+}
+
+@keyframes error-window-slide-in{
+    0% {
+        top: 0%;
+        opacity: 0;
+    }
+    100% {
+        top: 10%;
+        opacity: 1;
+    }
+    
+}
+@keyframes error-window-slide-out{
+    0% {
+        top: 10%;
+        opacity: 1;
+    }
+    100% {
+        top: 0%;
+        opacity: 0;
+    }
+    
+}
+
+@keyframes error {
+    0% {
+
+    }
+    20% {
+        color: var(--main-color);
+        border-color: var(--error-color);
+        background-color: var(--error-color);
+        box-shadow: 0 0 50px var(--error-color);
+    }
+    100% {
+
+    }
+}
+
+@keyframes success {
+    0% {
+
+    }
+    20% {
+        box-shadow: 0 0 50px var(--theme-color);
+    }
+    100% {
+
+    }
+}
+
 @keyframes modal-window-slide-out{
     0% {
         bottom: 50%;

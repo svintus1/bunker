@@ -5,7 +5,9 @@ export const CASCADE_ANIMATION_DELAY: number = 200;
 export type AkronymState = 
     'idle' 
     | 'active' | 'disabled' 
-    | 'opened' | 'closed';
+    | 'opened' | 'closed'
+    | 'error' | 'success'
+    ;
 
 /** Possible animations */
 export type AkronymAnimation = 
@@ -14,7 +16,9 @@ export type AkronymAnimation =
     | 'fade-in' | 'fade-out'
     | 'slide-up' | 'slide-down' | 'slide-left' | 'slide-right'
     |  'modal-window-slide-in' | 'modal-window-slide-out'
-    | 'curtain-up' | 'curtain-down' | 'curtain-left' | 'curtain-right';
+    | 'error-window-slide-in' | 'error-window-slide-out'
+    | 'curtain-up' | 'curtain-down' | 'curtain-left' | 'curtain-right'
+    | 'error' | 'success';
 
 export type AkronymVisibility =
     'hidden' | 'visible'
