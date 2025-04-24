@@ -22,6 +22,7 @@ class Lobby {
     private coolerSound: HTMLAudioElement;
     private startUpSound: HTMLAudioElement;
     private lines: HTMLDivElement;
+    private ambientMusic: HTMLAudioElement;
 
     private musicStatus: HTMLButtonElement;
 
@@ -33,13 +34,16 @@ class Lobby {
         this.startUpSound = document.querySelector('audio#start-up') as HTMLAudioElement;
         
         this.musicStatus = document.querySelector('#music-status') as HTMLButtonElement;
-        console.log(this.musicStatus);
         AkronymAnimator.changeVisibility(this.musicStatus, "hidden", 'fade-out', 0)
 
-        this.startAudio();
+        this.bootUpSound.play();
         setTimeout(() => {
             this.bootUp();
         }, 2000);
+
+        this.ambientMusic = document.getElementById('ambient-music') as HTMLAudioElement;
+        this.ambientMusic.src = './static/lobby/terminal-cooler.mp3';
+        this.ambientMusic.play();
     }
 
     private bootSequence: CodeLine[] = [
@@ -121,7 +125,7 @@ class Lobby {
         new CodeLine(">> AUTOMATIC PURGE SCHEDULED [ETA 47H 59M]", "#00ff00", 200),
         new CodeLine(">> WARNING: UNKNOWN PROCESS ACCESSING CAMERAS", "#ff0000", 150),
         new CodeLine(">> LAST MESSAGE: '...it's in the walls...'", "#aaaaaa", 300),
-        new CodeLine(">> SYSTEM READY", "#00ff00", 500),
+        new CodeLine(">> SYSTEM READY", "#00ff00", 1500),
         
     ];
     private bunkerOSSequence: CodeLine[] = [
@@ -153,16 +157,6 @@ class Lobby {
         new CodeLine("| )___) )| (___) || )  \\  ||  /  \\ \\| (____/\\| ) \\ \\__ _ | (___) |/\\____) |", "#00ffff", 25),
         new CodeLine("|/ \\___/ (_______)|/    )_)|_/    \\/(_______/|/   \\__/(_)(_______)\\_______)", "#00ffff", 0),
     ]
-    
-    public async startAudio() {
-        await this.waitForMediaLoaded(this.bootUpSound);
-
-        this.bootUpSound.play();
-
-        setTimeout(() => {
-            this.coolerSound.play();
-        }, 8700)
-    }
 
     private waitForMediaLoaded(mediaElement: HTMLMediaElement): Promise<void> {
         return new Promise((resolve, reject) => {
@@ -176,19 +170,49 @@ class Lobby {
     }
     public async bootUp() {
         this.terminal.dataset.turnedOn = "true";
+    
         for (const code of this.bootSequence) {
+            if (this.isCleaningUp) return; // Stop execution if cleaning up
             await this.writeLine(code);
         }
-        setTimeout(async() => {
-            this.lines.innerHTML = "";
+    
+        this.lines.innerHTML = "";
+    
+        if (!this.isCleaningUp) {
             this.startUpSound.play();
-            for (const code of this.bunkerOSSequence) {
-                await this.writeLine(code, "center");
-            }
-        }, 1000);
+        }
+    
+        for (const code of this.bunkerOSSequence) {
+            if (this.isCleaningUp) return; // Stop execution if cleaning up
+            await this.writeLine(code, "center");
+        }
+    }
+    private isCleaningUp: boolean = false;
+
+    public cleanup(): void {
+        // Set the cleanup flag
+        this.isCleaningUp = true;
+    
+        // Stop all audio
+        this.bootUpSound.pause();
+        this.bootUpSound.currentTime = 0;
+    
+        this.startUpSound.pause();
+        this.startUpSound.currentTime = 0;
+    
+        this.ambientMusic.pause();
+        this.ambientMusic.currentTime = 0;
+    
+        // Remove event listeners if any were added
+        // Example: this.someElement.removeEventListener('event', this.someHandler);
+    
+        // Clear intervals or timeouts if any
+        // Example: clearInterval(this.someIntervalId);
     }
     
     async writeLine(code: CodeLine, justify: string = "start", keyByKey: boolean = false) {
+        if (this.isCleaningUp) return; // Stop execution if cleaning up
+    
         const newLine = document.createElement('pre');
         newLine.style.color = code.color;
         newLine.style.textShadow = "0 0 10px " + code.color;
@@ -201,6 +225,7 @@ class Lobby {
     
         if (keyByKey) {
             for (const char of code.text) {
+                if (this.isCleaningUp) return; // Stop execution if cleaning up
                 newLine.innerText += char;
                 await new Promise(resolve => setTimeout(resolve, 20));
             }

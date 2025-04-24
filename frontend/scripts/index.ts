@@ -70,20 +70,25 @@ class Index {
     return response.text();
   }
 
-  private async loadPage(page: string, transition: boolean): Promise<void> {
+  private async loadPage(page: string): Promise<void> {
     const route = this.routes[page];
     const appContainer = document.getElementById('root');
+
+    // Cleanup logic for the previous page
+    if (this.page && typeof this.page.cleanup === 'function') {
+        this.page.cleanup();
+    }
 
     this.musicStatus.setAttribute('data-mute', "true");
     this.ambientMusic.pause();
     const template = await this.loadTemplate(route.template);
     
-    if (transition){
-      await AkronymAnimator.changeVisibility(this.cover, 'visible', 'fade-in', 1000);
-    }
+    await AkronymAnimator.changeVisibility(this.cover, 'visible', 'fade-in', 1000);
 
     const oldPage = appContainer?.querySelector('.page');
-    if (oldPage) oldPage.remove();
+    if (oldPage) {
+        oldPage.remove();
+    }
 
     const pageContainer = document.createElement('div');
     pageContainer.className = 'page';
@@ -94,7 +99,7 @@ class Index {
     this.modalWindow = pageContainer.querySelector('.modal-window') as HTMLDivElement;
     if (this.modalWindow) {
         if (this.modalBackdrop) {
-          this.modalBackdrop.appendChild(this.modalWindow);
+            this.modalBackdrop.appendChild(this.modalWindow);
         }
     }
 
@@ -106,9 +111,8 @@ class Index {
     this.page = module.init({
         navigateTo: this.navigateTo.bind(this)
     });
-    if (transition) {
-      await AkronymAnimator.changeVisibility(this.cover, 'hidden', 'fade-out', 1000);
-    }
+
+    await AkronymAnimator.changeVisibility(this.cover, 'hidden', 'fade-out', 1000);
   }
 
   private getPageFromPath(path: string): string {
@@ -123,22 +127,19 @@ class Index {
     const navigationEntries = performance.getEntriesByType('navigation') as PerformanceNavigationTiming[];
     const navigationType = navigationEntries[0].type;
     if (isPopState){
-      console.log('Navigation type: back-forward');
+      console.log('Navigation type: back_forward');
     }
     else {
       console.log('Navigation type:', navigationType);
     }
 
-    if (page === 'main' && navigationType === 'navigate') {
-      this.loadPage('main', false);
-    }
-    else if (navigationType == 'navigate') {
+    if (navigationType == 'navigate' && page !== 'main') {
       console.log('Illegal change of route, loading main page');
       history.pushState(null, '', '/main');
-      this.loadPage('main', false);
+      this.loadPage('main');
     }
     else {
-      this.loadPage(page, true);
+      this.loadPage(page);
     }
   }
 
@@ -148,7 +149,7 @@ class Index {
     history.pushState(null, '', `/${page}`);
     console.log('Route navigate:', window.location.pathname);
     console.log('Navigation type: routing');
-    this.loadPage(page, true);
+    this.loadPage(page);
   }
 }
 

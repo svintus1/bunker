@@ -9,7 +9,6 @@ const lobbyIDRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0
 const usernameRegex = /^[A-Za-zА-Яа-я0-9]{3,20}$/;
 
 class MainMenu {
-    private cover: HTMLDivElement;
     private ambientMusic: HTMLAudioElement;
     private musicStatus: HTMLButtonElement;
 
@@ -50,7 +49,6 @@ class MainMenu {
         this.createLobbyButton = document.getElementById('create-lobby') as HTMLButtonElement;
         this.joinLobbyButton = document.getElementById('join-lobby') as HTMLButtonElement;
 
-        this.cover = document.getElementById('cover') as HTMLDivElement;
         this.ambientMusic = document.getElementById('ambient-music') as HTMLAudioElement;
         this.ambientMusic.src = './static/main/End of the World Echoes.mp3';
         this.musicStatus = document.getElementById('music-status') as HTMLButtonElement;
@@ -61,7 +59,7 @@ class MainMenu {
 
         const navEntry = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming;
 
-        if (navEntry.type === "reload"){
+        if (navEntry.type === "reload" || navEntry.type === 'back_forward'){
             this.skipIntro();
         }
         else{
@@ -189,13 +187,11 @@ class MainMenu {
     
 
     private skipIntro(){
-        AkronymAnimator.changeVisibility(this.cover, "hidden", 'fade-out', 0);
         AkronymAnimator.changeVisibility(this.intro, "deleted", 'fade-out', 0);
         this.showMenu();
     }
 
     private initIntro(){
-        AkronymAnimator.changeVisibility(this.cover, "visible", 'fade-in', 0);
         AkronymAnimator.changeVisibility(this.intro, "visible", 'fade-in', 0);
 
         this.introAudio = document.getElementById("intro-audio") as HTMLAudioElement;
@@ -215,7 +211,6 @@ class MainMenu {
 
     private endIntro(): void {
         this.ambientMusic.play()
-        AkronymAnimator.changeVisibility(this.cover, "hidden", 'fade-out', 0);
         AkronymAnimator.changeVisibility(this.intro, "deleted", 'fade-out', 2000);
         AkronymEventRouter.add(this.intro, "animationenddeleted", this.showMenu.bind(this), true);
     }

@@ -29,50 +29,53 @@
 }
   
 #input-wrapper::before {
-content: '>';
-color: green;
-margin-right: 5px;
+    content: '>';
+    color: green;
+    margin-right: 5px;
 }
   
 #user-input {
-flex: 1;
-background-color: black;
-border: none;
-color: green;
-outline: none;
-user-select: none;
-font-size: 24px;
+    flex: 1;
+    background-color: black;
+    border: none;
+    color: green;
+    outline: none;
+    user-select: none;
+    font-size: 24px;
 }
 
   
 #terminal
 #user-input::before
 {
-content: '>';
-color: green;
-font-size: 24px;
-font-weight: bold;
-aspect-ratio: 1/1;
-height: 100%;
-font-family: 'Courier New', Courier, monospace;
+    content: '>';
+    color: green;
+    font-size: 24px;
+    font-weight: bold;
+    aspect-ratio: 1/1;
+    height: 100%;
+    font-family: 'Courier New', Courier, monospace;
 }
   
 #terminal
 #user-input::selection{
-color: black;
-background-color: green;
+    color: black;
+    background-color: green;
 }
   
   
 #screen
 {
-position: absolute;
-border-radius: 100px;
-width: 95%;
-height: 90%;
+    position: absolute;
+    border-radius: 100px;
+    width: 95%;
+    height: 90%;
 
-display: flex;
-flex-direction: column;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
 }
   
 #screen
@@ -84,32 +87,28 @@ width: min-content;
 #screen
 #texture
 {
-position: absolute;
-bottom: 0;
-left: 0;
-width: 100%;
-height: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 
-background-image: url(../static/lobby/scanlines_dusty.png);
-background-position: center;
-background-size: cover;
-background-repeat: no-repeat;
-border-radius: 100px;
+    background-image: url(../static/lobby/scanlines_dusty.png);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-radius: 100px;
 
-pointer-events: none;
-z-index: 1;
+    pointer-events: none;
+    z-index: 1;
 }
 
 #screen
 #lines
 {
-width: 100%;
-height: 100%;
-padding-top: 50px;
-padding-bottom: 50px;
-padding-left: 75px;
-padding-right: 75px;
-overflow: hidden;
+    width: 90%;
+    height: 90%;
+    overflow: hidden;
 }
 #terminal[data-turned-on]
 #screen

@@ -292,17 +292,11 @@ input[type="text"] {
 
 		transition: color var(--hover-transition);
 	}
-
-	&:is(:hover, :focus)::placeholder {
-		color: var(--main-color);
-	}
-
 	&::selection {
 		background-color: var(--main-color);
 
 		color: var(--theme-color);
 	}
-
 	&:is(:hover, :focus) {
 		background-color: var(--theme-color);
 		outline: none;
