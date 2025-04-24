@@ -1,6 +1,6 @@
 services:
   frontend:
-    image: localhost:5000/frontend:latest
+    image: 10.0.10.15:5000/frontend:latest
     restart: always
     ports:
       - 8080:80
@@ -10,7 +10,7 @@ services:
       - my_network
     
   backend:
-    image: localhost:5000/backend:latest
+    image: 10.0.10.15:5000/backend:latest
     restart: always
     env_file:
       - config/.env.backend
