@@ -18,8 +18,6 @@ services:
       - config/.env.redis
     networks:
       - my_network
-    ports:
-      - 8000:8000
     depends_on:
       - db
       - redis
@@ -39,9 +37,6 @@ services:
       REDIS_ARGS: "--requirepass mypassword"
     networks:
       - my_network
-    ports:
-      - 6379:6379
-      - 8001:8001
 
 networks:
   my_network:
