@@ -48,8 +48,8 @@ services:
       - pg_db
       - pg_user
       - pg_pass
-    env_file:
-      - config/.env.pg
+    # env_file:
+    #   - config/.env.pg
     networks:
       - my_network
 
@@ -59,8 +59,8 @@ services:
     secrets:
       - source: redis.conf
         target: /etc/redis/redis.conf
-    environment:
-      REDIS_ARGS: "--requirepass mypassword"
+    # environment:
+    #   REDIS_ARGS: "--requirepass mypassword"
     networks:
       - my_network
 
