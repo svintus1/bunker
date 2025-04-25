@@ -133,18 +133,19 @@ class MainMenu {
         }
     
         console.log('Creating lobby...');
-        APIMain.createUser(username).then((user) => {
-            return APIMain.createLobby(username, user.id);
-        }).then((lobby) => {
-            console.log('Lobby created:', lobby);
-            this.navigateTo(`lobby`);
-            AkronymAnimator.changeState(this.createLobbyButton, "success", "success", 1500);
-        }).catch((err) => {
-            const message = err?.message || "Unknown error occurred during lobby creation.";
-            console.error(message);
-            this.showErrorWindow(message, this.createLobbyButton);
-            AkronymAnimator.changeState(this.createLobbyButton, "error", "error", 1500);
-        });
+        this.navigateTo(`lobby`);
+        // APIMain.createUser(username).then((user) => {
+        //     return APIMain.createLobby(username, user.id);
+        // }).then((lobby) => {
+        //     console.log('Lobby created:', lobby);
+        //     this.navigateTo(`lobby`);
+        //     AkronymAnimator.changeState(this.createLobbyButton, "success", "success", 1500);
+        // }).catch((err) => {
+        //     const message = err?.message || "Unknown error occurred during lobby creation.";
+        //     console.error(message);
+        //     this.showErrorWindow(message, this.createLobbyButton);
+        //     AkronymAnimator.changeState(this.createLobbyButton, "error", "error", 1500);
+        // });
     }
     
 
@@ -172,17 +173,18 @@ class MainMenu {
         }
     
         console.log('Joining lobby...');
-        APIMain.createUser(username).then((user) => {
-            return APIMain.joinLobby(lobbyID);
-        }).then((lobby) => {
-            AkronymAnimator.changeState(this.enterLobbyButton, "success", "success", 1500);
-            this.navigateTo(`lobby`);
-        }).catch((err) => {
-            const message = err?.message || "Unknown error occurred while joining the lobby.";
-            console.error(message);
-            this.showErrorWindow(message, this.enterLobbyButton);
-            AkronymAnimator.changeState(this.enterLobbyButton, "error", "error", 1500);
-        });
+        this.navigateTo(`lobby`);
+        // APIMain.createUser(username).then((user) => {
+        //     return APIMain.joinLobby(lobbyID);
+        // }).then((lobby) => {
+        //     AkronymAnimator.changeState(this.enterLobbyButton, "success", "success", 1500);
+        //     this.navigateTo(`lobby`);
+        // }).catch((err) => {
+        //     const message = err?.message || "Unknown error occurred while joining the lobby.";
+        //     console.error(message);
+        //     this.showErrorWindow(message, this.enterLobbyButton);
+        //     AkronymAnimator.changeState(this.enterLobbyButton, "error", "error", 1500);
+        // });
     }
     
 
