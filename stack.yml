@@ -26,16 +26,8 @@ services:
   db:
     image: postgres:17
     restart: always
-    environment:
-      POSTGRES_DB_FILE: /run/secrets/pg_db
-      POSTGRES_USER_FILE: /run/secrets/pg_user
-      POSTGRES_PASSWORD_FILE: /run/secrets/pg_pass
-    secrets:
-      - pg_db
-      - pg_user
-      - pg_pass
-    # env_file:
-    #   - config/.env.pg
+    env_file:
+      - config/.env.pg
     networks:
       - my_network
 
