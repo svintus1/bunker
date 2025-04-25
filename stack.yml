@@ -50,12 +50,12 @@ configs:
   nginx.conf:
     external: true
 
-secrets:
-  redis.conf:
-    external: true
-  pg_db:
-    external: true
-  pg_user:
-    external: true
-  pg_pass:
-    external: true
+# secrets:
+#   redis.conf:
+#     external: true
+#   pg_db:
+#     external: true
+#   pg_user:
+#     external: true
+#   pg_pass:
+#     external: true
