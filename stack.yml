@@ -34,11 +34,11 @@ services:
   redis:
     image: redis/redis-stack:latest
     restart: always
-    secrets:
-      - source: redis.conf
-        target: /etc/redis/redis.conf
-    # environment:
-    #   REDIS_ARGS: "--requirepass mypassword"
+    # secrets:
+    #   - source: redis.conf
+    #     target: /etc/redis/redis.conf
+    environment:
+      REDIS_ARGS: "--requirepass mypassword"
     networks:
       - my_network
 
