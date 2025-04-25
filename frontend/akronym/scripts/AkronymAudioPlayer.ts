@@ -50,6 +50,12 @@ export class AkronymAudioPlayer {
     list.push(cb)
     this.events.set(event, list)
   }
+  
+  off(event: AudioEvent, cb: Callback): void {
+    const list = this.events.get(event);
+    if (!list) return;
+    this.events.set(event, list.filter(fn => fn !== cb));
+  }
 
   private trigger(event: AudioEvent, payload?: any): void {
     (this.events.get(event) || []).forEach(cb => cb(payload))

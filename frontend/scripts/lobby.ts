@@ -1,6 +1,8 @@
 import { AkronymAnimator } from "../akronym/scripts/AkronymAnimator.js";
 import { AkronymEventRouter } from "../akronym/scripts/AkronymEventRouter.js";
 import * as sequences from "./sequences.js";
+import { AkronymAudioPlayer } from "../akronym/scripts/AkronymAudioPlayer.js";
+
 export function init({ navigateTo }: { navigateTo: (path: string) => void }): Lobby {
     return new Lobby(navigateTo);
 }
@@ -22,9 +24,13 @@ class Lobby {
     public terminal: HTMLDivElement;
     private lines: HTMLDivElement;
     private userInput: HTMLInputElement;
+    private typingSound: AkronymAudioPlayer;
+    private newCommandSound: AkronymAudioPlayer;
 
     private cmds = new Map<string, Command>();
     private isCleaningUp: boolean = false;
+
+    private repeatSound = () => this.typingSound.play();
 
     constructor(navigateTo: (path: string) => void) {
         this.terminal = document.getElementById('terminal') as HTMLDivElement;
@@ -32,6 +38,9 @@ class Lobby {
         this.lines = document.querySelector('#lines') as HTMLDivElement;
         this.startUpSound = document.querySelector('audio#start-up') as HTMLAudioElement;
         this.userInput = document.getElementById('user-input') as HTMLInputElement;
+        this.typingSound = new AkronymAudioPlayer('./static/lobby/typing.wav');
+        this.typingSound.setVolume(0.75);
+        this.newCommandSound = new AkronymAudioPlayer('./static/lobby/new-command.mp3')
         
         this.musicStatus = document.querySelector('#music-status') as HTMLButtonElement;
         AkronymAnimator.changeVisibility(this.musicStatus, "hidden", 'fade-out', 0);
@@ -51,8 +60,12 @@ class Lobby {
 
     public async bootUp() {
         this.terminal.dataset.turnedOn = "true";
-    
+
+        console.log();
+        const start = performance.now();
         await this.writeCode(sequences.bootSequence);
+        const end = performance.now();
+        console.log(`Время запуска: ${(end - start).toFixed(2)} мс`);
     
         this.clearTerminal();
 
@@ -190,11 +203,13 @@ class Lobby {
         AkronymEventRouter.add(document, "keydown", (event: Event) => {
             const keyboardEvent = event as KeyboardEvent;
             if (keyboardEvent.key === "Enter") {
+                this.newCommandSound.stop();
                 const input = this.userInput.value;
                 this.writeCode(new sequences.Line("> " + input, "#00ff00", 0));
                 this.run(input);
                 this.userInput.value = "";
                 this.lines.scrollTop = this.lines.scrollHeight;
+                this.newCommandSound.play();
             }
         })
     }
@@ -277,8 +292,8 @@ class Lobby {
         for (const Line of linesToWrite) {
             let newLine: HTMLPreElement;
     
-            if (Line.overwrite && this.lines?.lastElementChild) {
-                newLine = this.lines.children[-2] as HTMLPreElement;
+            if (Line.overwrite) {
+                newLine = this.lines.children[this.lines.children.length - 2] as HTMLPreElement;
                 newLine.innerText = "";
                 newLine.style.color = Line.color;
                 newLine.style.textShadow = "0 0 10px " + Line.color;
@@ -301,6 +316,8 @@ class Lobby {
             this.lines.scrollTop = this.lines.scrollHeight;
     
             if (keyByKey) {
+                this.typingSound.play();
+                this.typingSound.on('ended', this.repeatSound);
                 for (const char of Line.text) {
                     if (this.isCleaningUp) return;
                     newLine.innerText += char;
@@ -309,6 +326,8 @@ class Lobby {
             } else {
                 newLine.innerText = Line.text;
             }
+            this.typingSound.stop();
+            this.typingSound.off('ended', this.repeatSound);
 
             if (Line.duration !== 0) {
                 await new Promise(resolve => setTimeout(resolve, Line.duration));

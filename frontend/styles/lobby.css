@@ -9,7 +9,7 @@
     background-color: rgb(0, 0, 0);
     background-repeat: no-repeat;
 
-    font-family: 'Courier New', Courier, monospace;
+    font-family: monospace;
     font-size: 24px;
     font-weight: bold;
     user-select: none;
@@ -60,6 +60,7 @@
 
             & pre {
                 width: min-content;
+                font-family: monospace;
             }
 
             & pre[data-aligned="center"] {
@@ -114,7 +115,7 @@
         margin-right: 5px;
         text-shadow: 0 0 10px #00ff00;
 
-        font-family: 'Courier New', Courier, monospace;
+        font-family: monospace;
         font-size: 24px;
         font-weight: bold;
     }
@@ -130,6 +131,7 @@
 
         font-size: 24px;
         font-weight: bold;
+        font-family: monospace;
         color: #00ff00;
         text-align: start;
         text-shadow: 0 0 10px #00ff00;

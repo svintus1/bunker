@@ -19,12 +19,172 @@ export const helloSequence: Line[] = [
 
 export const helpSequence: Line[] = [
     new Line("[HELP] Команда 'users show' - показать список игроков", "#aaaaaa"),
-    new Line("[HELP] Команда 'kick' - исключить игрока по номеру (например, 'kick 5')", "#aaaaaa"),
+    new Line("[HELP] Команда 'kick {number}' - исключить игрока по номеру (например, 'kick 5')", "#aaaaaa"),
     new Line("[HELP] Команда 'start' - начать игру", "#aaaaaa"),
     new Line("[HELP] Команда 'exit' - покинуть лобби", "#aaaaaa"),
 ];
 
 export const bootSequence: Line[] = [
+    new Line(">> [BOOT] BunkerOS v7.4.0-Ψ3 INITIALIZING...", "#00ff00", 400),
+
+    new Line("[INPUT] Инициация процедуры верификации системных компонентов...", "#aaaaaa", 40),
+    new Line("[PROCESS] Модуль: checksum::core>init()", "#aaaaaa", 30),
+    new Line("[SYS] Выполняется CRC32-проверка ядра...", "#aaaaaa", 40),
+    new Line("[CHECKSUM] Результат: 9F-A2-73-00-Ψ3::valid", "#aaaaaa", 30),
+    new Line("[AUTH] Верификация цифровой подписи ядра...", "#aaaaaa", 40),
+    new Line("[SIGNATURE] Подпись: RSA-4096 OK :: identity=bunker-core-Ψ3", "#00ff00", 20),
+    new Line("[SECURITY] Сертификат системы: Ψ-ROOT-TRUST.crt подтверждён", "#00ff00", 20),
+    new Line("[INFO] Версия ядра: BunkerOS 7.4.0-Ψ3 @ 0xBFC0", "#00ff00", 20),
+    new Line("[STATUS] Состояние ядра: В СИНХРОНИЗАЦИИ С ЦЕНТРАЛЬНЫМ УЗЛОМ", "#00ff00", 20),
+    new Line("[SYNC] Таймкод: 0023-9D7B-CΨ", "#aaaaaa", 20),
+    new Line("[SECLOG] Аудит завершён: ошибок не обнаружено", "#00ff00", 20),
+
+    // Загрузка компонентов ядра с прогресс-баром
+    new Line("[LOAD] Загрузка ядра [▒▒▒▒▒▒▒▒▒▒]", "#aaaaaa", 50),
+    new Line("[LOAD] Загрузка ядра [█▒▒▒▒▒▒▒▒▒]", "#aaaaaa", 50, true),
+    new Line("[LOAD] Загрузка ядра [██▒▒▒▒▒▒▒▒]", "#aaaaaa", 50, true),
+    new Line("[LOAD] Загрузка ядра [███▒▒▒▒▒▒▒]", "#aaaaaa", 50, true),
+    new Line("[LOAD] Загрузка ядра [████▒▒▒▒▒▒]", "#aaaaaa", 50, true),
+    new Line("[LOAD] Загрузка ядра [█████▒▒▒▒▒]", "#aaaaaa", 75, true),
+    new Line("[LOAD] Загрузка ядра [██████▒▒▒▒]", "#aaaaaa", 75, true),
+    new Line("[LOAD] Загрузка ядра [███████▒▒▒]", "#aaaaaa", 75, true),
+    new Line("[LOAD] Загрузка ядра [████████▒▒]", "#aaaaaa", 75, true),
+    new Line("[LOAD] Загрузка ядра [█████████▒]", "#aaaaaa", 125, true),
+    new Line("[LOAD] Загрузка ядра [██████████]", "#00ff00", 70, true),
+
+    new Line("[INIT] > Загрузка схемы процессов [schema.proc]...", "#aaaaaa", 60),
+    new Line("[PROC] -> Регистрация сигнатур: 23 объектов...", "#aaaaaa", 40),
+    new Line("[INIT] > Установка таблицы прерываний @0x004F...", "#aaaaaa", 50),
+    new Line("[SYSCALL] -> Привязка 78 системных вызовов (std+ext)...", "#aaaaaa", 45),
+    new Line("[MEM] Инициализация менеджера памяти (MMU-Ψ)...", "#aaaaaa", 70),
+    new Line("[MEM] -> Карта памяти построена: 1024 блоков", "#aaaaaa", 40),
+    new Line("[DRIVER] > Загрузка диспетчера IRQ...", "#aaaaaa", 55),
+    new Line("[READY] Модуль событий успешно активирован", "#00ff00", 35),
+    
+
+    new Line("[SECURITY] Инициализация параметров безопасности...", "#ffff00", 120),
+    new Line("[SECURITY] Политика доступа: УРОВЕНЬ 5 — ПРИОРИТЕТ: ВЫСОКИЙ", "#ffff00", 50),
+    new Line("[SECURITY] > Обнаружены нестабильные флаги в конфигурации ядра", "#ffff00", 60),
+    new Line("[SECURITY] Протокол защиты памяти: АКТИВЕН — МОНИТОРИНГ В РЕЖИМЕ Ψ-ALERT", "#00ff00", 40),
+    new Line("[SECURITY] >> Целостность подсистемы I/O: ПОД ВОПРОСОМ", "#ffff00", 45),
+    new Line("[SECURITY] Мониторинг целостности включён", "#00ff00", 40),
+    new Line("[SECURITY] >> Включена самодиагностика критических точек", "#aaaaaa", 30),
+    new Line("[SECURITY] Безопасный режим: ВКЛЮЧЕН", "#00ff00", 70),
+    new Line("[WARNING] > Нестабильность уровня L2 верификации — продолжение возможно", "#ffff00", 60),        
+
+    new Line("[SYS] Инициализация управляющего ядра           [▒▒▒▒▒▒▒▒▒▒]", "#aaaaaa", 35),
+    new Line("[SYS] Модуль U-CTRL: загрузка                   [█▒▒▒▒▒▒▒▒▒]", "#aaaaaa", 50, true),
+    new Line("[SYS] Модуль IO-BUS: handshake...               [██▒▒▒▒▒▒▒▒]", "#aaaaaa", 25, true),
+    new Line("[SYS] Установка DMA-каналов                     [███▒▒▒▒▒▒▒]", "#aaaaaa", 50, true),
+    new Line("[SYS] Регистр адресов: OK                       [████▒▒▒▒▒▒]", "#aaaaaa", 50, true),
+    new Line("[SYS] Проверка сигнала: ±0.03v отклонение       [█████▒▒▒▒▒]", "#ffff00", 45, true),
+    new Line("[SYS] Подсистема PWR-MANAGER нестабильна        [██████▒▒▒▒]", "#ffff00", 25, true),
+    new Line("[SYS] Калибровка тактирования...                [███████▒▒▒]", "#aaaaaa", 65, true),
+    new Line("[SYS] Канал связи L1 синхронизирован            [████████▒▒]", "#00ff00", 55, true),
+    new Line("[SYS] Статус устройств: 12/12 OK                [█████████▒]", "#00ff00", 75, true),
+    new Line("[SYS] Контроль CRC аппаратного пула: ПРИНЯТО    [██████████]", "#00ff00", 70, true),
+    new Line("[SYS] Подсистемы управления успешно активированы",              "#00ff00", 20),
+    
+    new Line("[SENSOR] Инициализация сенсорных систем...               ", "#aaaaaa", 90),
+    new Line("[SENSOR] Температурные датчики: OK                       ", "#00ff00", 20),
+    new Line("[SENSOR] Датчики давления: OK                            ", "#00ff00", 20),
+    new Line("[SENSOR] Датчики вибрации: OK                            ", "#00ff00", 20),
+    new Line("[SENSOR] Датчики радиации: OK                            ", "#00ff00", 25),
+    new Line("[SENSOR] Радиационный контроль: Стабильный сигнал        ", "#00ff00", 40),
+    new Line("[SENSOR] Калибровка сенсоров завершена успешно           ", "#00ff00", 60),
+    new Line("[SENSOR] СЕГМЕНТ 1: Синхронизация успешна                ", "#00ff00", 50),
+    new Line("[SENSOR] Диагностика: Все модули функционируют стабильно ", "#00ff00", 70),
+    new Line("[SENSOR] Датчики радиации: WARNING — отклонение 0.9%     ", "#ffff00", 30),
+    new Line("[SENSOR] ПРЕДУПРЕЖДЕНИЕ: Незначительная задержка сигнала ", "#ffff00", 25),
+    new Line("[SENSOR] Ультразвуковые сенсоры: OK                      ", "#00ff00", 20),
+    new Line("[SENSOR] Температурные сенсоры: OK                       ", "#00ff00", 20),
+
+    new Line("[SENSOR] Датчики движения: OK", "#00ff00", 20),
+    new Line("[WARNING] Зарегистрировано движение в секторе 3-C", "#ffff00", 25),
+    new Line("[SENSOR] Датчики звука: OK", "#00ff00", 20),
+    new Line("[WARNING] Зарегистрирован шум в секторе 3-C, уровень: 78.5 dB", "#ffff00", 35),
+    new Line("[ALERT] НЕИЗВЕСТНЫЙ ОБЪЕКТ В СЕКТОРЕ 3-С", "#ff0000", 40),
+    new Line("[SENSOR] Остановка процесса инициализации датчиков", "#ffff00", 20),
+    new Line("[SECURITY] Протокол «REAPER» запущен |", "#ffff00", 50),
+    new Line("[SECURITY] Протокол «REAPER» запущен /", "#ffff00", 50, true),
+    new Line("[SECURITY] Протокол «REAPER» запущен -", "#ffff00", 50, true),
+    new Line("[SECURITY] Протокол «REAPER» запущен \\", "#ffff00", 50, true),
+    new Line("[SECURITY] Протокол «REAPER» запущен |", "#ffff00", 50, true),
+    new Line("[SECURITY] Протокол «REAPER» запущен /", "#ffff00", 50, true),
+    new Line("[SECURITY] Протокол «REAPER» запущен -", "#ffff00", 50, true),
+    new Line("[SECURITY] Протокол «REAPER» запущен \\", "#ffff00", 50, true),
+    new Line("[SECURITY] Протокол «REAPER» запущен |", "#ffff00", 50, true),
+    new Line("[SECURITY] Протокол «REAPER» запущен /", "#ffff00", 50, true),
+    new Line("[SECURITY] Протокол «REAPER» запущен -", "#ffff00", 50, true),
+    new Line("[SECURITY] Протокол «REAPER» запущен \\", "#ffff00", 50, true),
+    new Line("[SECURITY] Протокол «REAPER» запущен |", "#ffff00", 50, true),
+    new Line("[SECURITY] Протокол «REAPER» запущен /", "#ffff00", 50, true),
+    new Line("[SECURITY] Протокол «REAPER» запущен -", "#ffff00", 50, true),
+    new Line("[SECURITY] Протокол «REAPER» запущен \\", "#ffff00", 50, true),
+    new Line("[SECURITY] Протокол «REAPER» запущен |", "#ffff00", 50, true),
+    new Line("[SECURITY] Протокол «REAPER» запущен /", "#ffff00", 50, true),
+    new Line("[SECURITY] Протокол «REAPER» запущен -", "#ffff00", 50, true),
+    new Line("[SECURITY] Протокол «REAPER» запущен \\", "#ffff00", 50, true),
+    new Line("[SECURITY] Протокол «REAPER» запущен |", "#ffff00", 50, true),
+    new Line("[SECURITY] Протокол «REAPER» запущен /", "#ffff00", 50, true),
+    new Line("[SECURITY] Протокол «REAPER» запущен -", "#ffff00", 50, true),
+    new Line("[SECURITY] Протокол «REAPER» запущен \\", "#ffff00", 50, true),
+    new Line("[SECURITY] Протокол «REAPER» успешно завершён (34-DC-A4-AK)", "#00ff00", 50, true),  
+    new Line("�8ТЫж#Q@НЕ!�%ДДОЛЖЕН?*n7ВБЫТЬ$^&kФ5~+ПЗДЕСЬ9г", "#aaaaaa", 20),
+    new Line("[SECURITY] Проверка движения в секторе 3-C", "#ffff00", 500),
+    new Line("[SECURITY] Движение в секторе 3-C: отсутствует", "#00ff00", 50),
+    new Line("[SECURITY] Проверка шума в секторе 3-C", "#ffff00", 500),
+    new Line("[SECURITY] Шум в секторе 3-C: отсутствует", "#00ff00", 50),
+    new Line("[SENSOR] Продолжение процесса инициализации датчиков", "#00ff00", 20),
+    // Сенсоры и камеры
+    new Line("[SENS] Частота опроса: 47Hz (нестаб.)", "#ffff00", 30),
+    new Line("[EYE] Сектор 4: ОШИБКА ФОКУСИРОВКИ", "#ff0000", 45),
+    new Line("[VIS] Артефакты 12-го порядка", "#ffff00", 40),
+
+    // Вентиляция
+    new Line("[VENT] Вихревой контур: АКТИВЕН", "#ffff00", 35),
+    new Line("[AIR] Рециркуляция: 78% (Δ+2%)", "#00ff00", 25),
+
+    // Шлюзы
+    new Line("[GATE] Сегмент 3: ФАЗОВЫЙ СДВИГ", "#ff0000", 50),
+    new Line("[DOOR] Биометрия: ОТКАЗ КОДА 0x7F", "#ffff00", 45),
+
+    // Энергия
+    new Line("[PWR] Обратная индукция: 0.04MW", "#ffff00", 40),
+    new Line("[PWR] Контур β: КОЛЕБАНИЯ", "#ff0000", 55),
+
+    // Связь
+    new Line("[COMM] Несущая: ДРЕЙФ +12Гц", "#ffff00", 35),
+    new Line("[SIG] Пакеты 34% LOST", "#ff0000", 60),
+
+    // Среда
+    new Line("[ENV] Термоклин: НЕЛИНЕЙНЫЙ", "#ffff00", 50),
+    new Line("[RAD] Фон: 0.05µSv (норма)", "#00ff00", 30),
+
+    // Системы
+    new Line("[AI] Дерево решений: ПЕРЕСТРОЙКА", "#ffff00", 70),
+    new Line("[SYS] Хеш-контроль: FAIL", "#ff0000", 45),
+
+    // Протоколы
+    new Line("[PROT] Перепись правил 34-12...", "#aaaaaa", 80),
+    new Line("[SAFE] Контур γ: ЗАБЛОКИРОВАН", "#00ff00", 40),
+
+    // Статус
+    new Line("[FINAL] Целостность... 89%", "#ffff00", 100),
+    new Line("[STATUS] КРИТИЧЕСКИЕ ОШИБКИ: 3", "#ff0000", 60),
+    new Line("[END] Частичная стабилизация", "#ffff00", 50),
+
+    // Переход в рабочий режим
+    new Line("[SYSTEM] Переход в рабочий режим...", "#00ff00", 120),
+    new Line("[SYSTEM] Все системы готовы к эксплуатации", "#00ff00", 60),
+    new Line("[SYSTEM] Ожидание команд пользователя...", "#00ff00", 90),
+    new Line("[SYSTEM] Рабочий режим активирован", "#00ff00", 50),
+    new Line("[SYSTEM] Включение системы наблюдения за состоянием...", "#aaaaaa", 80),
+    new Line("[SYSTEM] Система мониторинга активна", "#00ff00", 60),
+    new Line(">[SYSTEM READY] BunkerOS v7.4.0-Ψ3 OPERATIONAL", "#00ff00", 500),
+];
+
+export const bootSequenceOld: Line[] = [
     ///// ФАЗА 1: СТАНДАРТНАЯ ИНИЦИАЛИЗАЦИЯ /////
     new Line(">> [BOOT] BunkerOS v7.4.0-Ψ3 ИНИЦИАЛИЗАЦИЯ...", "#00ff00", 400),
     new Line(">> BIOS: CRYPTECH SECURE BOOT v4.2", "#00ff00", 30),
