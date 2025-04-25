@@ -1,121 +1,146 @@
-#terminal
-{
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgb(0, 0, 0);
-  background-repeat: no-repeat;
-
-  font-size: 24px;
-  user-select: none;
-  overflow: hidden;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  font-family: 'Courier New', Courier, monospace;
-}
-
-#input-wrapper {
-    display: flex;
-    align-items: center;
-    background-color: black;
-    height: 24px;
-    font-size: 24px;
-    color: green;
-}
-  
-#input-wrapper::before {
-    content: '>';
-    color: green;
-    margin-right: 5px;
-}
-  
-#user-input {
-    flex: 1;
-    background-color: black;
-    border: none;
-    color: green;
-    outline: none;
-    user-select: none;
-    font-size: 24px;
-}
-
-  
-#terminal
-#user-input::before
-{
-    content: '>';
-    color: green;
-    font-size: 24px;
-    font-weight: bold;
-    aspect-ratio: 1/1;
-    height: 100%;
-    font-family: 'Courier New', Courier, monospace;
-}
-  
-#terminal
-#user-input::selection{
-    color: black;
-    background-color: green;
-}
-  
-  
-#screen
-{
+#terminal {
     position: absolute;
-    border-radius: 100px;
-    width: 95%;
-    height: 90%;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-}
-  
-#screen
-pre
-{
-width: min-content;
-}
-
-#screen
-#texture
-{
-    position: absolute;
-    bottom: 0;
+    top: 0;
     left: 0;
+
     width: 100%;
     height: 100%;
 
-    background-image: url(../static/lobby/scanlines_dusty.png);
-    background-position: center;
-    background-size: cover;
+    background-color: rgb(0, 0, 0);
     background-repeat: no-repeat;
-    border-radius: 100px;
 
-    pointer-events: none;
-    z-index: 1;
+    font-family: monospace;
+    font-size: 24px;
+    font-weight: bold;
+    user-select: none;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    & #screen {
+        position: absolute;
+
+        width: 95%;
+        height: 90%;
+
+        border-radius: 100px;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+
+        & #texture {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            z-index: 1;
+
+            width: 100%;
+            height: 100%;
+        
+            background-image: url(../static/lobby/scanlines_dusty.png);
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            border-radius: 100px;
+            pointer-events: none;
+        }
+
+        & #lines {
+            width: 90%;
+            height: 90%;
+
+            overflow: hidden;
+
+            display: flex;
+            flex-direction: column;
+
+            & pre {
+                width: min-content;
+                font-family: monospace;
+            }
+
+            & pre[data-aligned="center"] {
+                align-self: center;
+            }
+
+            /* Настройка общего размера скроллбара */
+            &::-webkit-scrollbar {
+                width: 5px; /* для вертикального скроллбара */
+                height: 5px; /* для горизонтального скроллбара */
+            }
+
+            /* Настройка стиля ползунка (thumb) */
+            &::-webkit-scrollbar-thumb {
+                background-color: #096900; /* цвет ползунка */
+                border-radius: 10px; /* скругление углов */
+            }
+
+            /* Настройка стиля трека (track) */
+            &::-webkit-scrollbar-track {
+                background: rgb(43, 43, 43); /* цвет фона трека */
+                border-radius: 10px;
+            }
+
+        }
+    }
+    
+    &[data-turned-on] #screen {
+        background-color: rgb(34, 34, 34);
+        box-shadow: 0 0 100px 0px rgb(20, 20, 20);
+
+        animation: screenglow 0.01s infinite alternate ease-in-out, turn-on 0.1s forwards;
+    }
 }
 
-#screen
-#lines
-{
-    width: 90%;
-    height: 90%;
-    overflow: hidden;
-}
-#terminal[data-turned-on]
-#screen
-{
-animation: screenglow 0.01s infinite alternate ease-in-out, turn-on 0.1s forwards;
-background-color: rgb(34, 34, 34);
-box-shadow: 0 0 100px 0px rgb(20, 20, 20);
+
+#input-wrapper {
+    height: min-content;
+
+    outline: none;
+    user-select: none;
+
+    font-size: 24px;
+    color: #00ff00;
+
+    display: flex;
+    align-items: center;
+
+    &::before {
+        content: '>';
+        color: #00ff00;
+        margin-right: 5px;
+        text-shadow: 0 0 10px #00ff00;
+
+        font-family: monospace;
+        font-size: 24px;
+        font-weight: bold;
+    }
+    & #user-input {
+        height: min-content;
+        flex: 1;
+        border: none;
+
+        outline: none;
+        user-select: none;
+        background-color: transparent;
+        border-radius: 0;
+
+        font-size: 24px;
+        font-weight: bold;
+        font-family: monospace;
+        color: #00ff00;
+        text-align: start;
+        text-shadow: 0 0 10px #00ff00;
+
+        &::selection {
+            background-color: #00ff00;
+            color: black;
+        }
+    }
 }
 
 @keyframes screenglow {
