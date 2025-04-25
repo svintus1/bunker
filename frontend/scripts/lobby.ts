@@ -1,194 +1,181 @@
 import { AkronymAnimator } from "../akronym/scripts/AkronymAnimator.js";
+import { AkronymEventRouter } from "../akronym/scripts/AkronymEventRouter.js";
+import * as sequences from "./sequences.js";
+import { AkronymAudioPlayer } from "../akronym/scripts/AkronymAudioPlayer.js";
+
 export function init({ navigateTo }: { navigateTo: (path: string) => void }): Lobby {
     return new Lobby(navigateTo);
 }
 
-class CodeLine {
-    public text: string;
-    public color: string;
-    public duration: number;
-
-    constructor(text:string, color:string, duration:number){
-        this.text = text;
-        this.color = color;
-        this.duration = duration;
-    }
-}
+interface Command {
+    validate?: (args: string[]) => boolean;
+    execute?: (args: string[]) => Promise<void>;
+    subcommands?: Map<string, Command>;
+    errorMsg?: string;
+  }
 
 class Lobby {
-    public page: any;
-    public terminal: HTMLDivElement;
-    private bootUpSound: HTMLAudioElement;
-    private coolerSound: HTMLAudioElement;
-    private startUpSound: HTMLAudioElement;
-    private lines: HTMLDivElement;
     private ambientMusic: HTMLAudioElement;
-
     private musicStatus: HTMLButtonElement;
+
+    private bootUpSound: HTMLAudioElement;
+    private startUpSound: HTMLAudioElement;
+
+    public terminal: HTMLDivElement;
+    private lines: HTMLDivElement;
+    private userInput: HTMLInputElement;
+    private typingSound: AkronymAudioPlayer;
+    private newCommandSound: AkronymAudioPlayer;
+
+    private cmds = new Map<string, Command>();
+    private isCleaningUp: boolean = false;
+
+    private repeatSound = () => this.typingSound.play();
 
     constructor(navigateTo: (path: string) => void) {
         this.terminal = document.getElementById('terminal') as HTMLDivElement;
         this.bootUpSound = document.querySelector('audio#boot-up') as HTMLAudioElement;
-        this.coolerSound = document.querySelector('audio#cooler') as HTMLAudioElement;
         this.lines = document.querySelector('#lines') as HTMLDivElement;
         this.startUpSound = document.querySelector('audio#start-up') as HTMLAudioElement;
+        this.userInput = document.getElementById('user-input') as HTMLInputElement;
+        this.typingSound = new AkronymAudioPlayer('./static/lobby/typing.wav');
+        this.typingSound.setVolume(0.75);
+        this.newCommandSound = new AkronymAudioPlayer('./static/lobby/new-command.mp3')
         
         this.musicStatus = document.querySelector('#music-status') as HTMLButtonElement;
-        AkronymAnimator.changeVisibility(this.musicStatus, "hidden", 'fade-out', 0)
+        AkronymAnimator.changeVisibility(this.musicStatus, "hidden", 'fade-out', 0);
+        
 
         this.bootUpSound.play();
         setTimeout(() => {
             this.bootUp();
-        }, 2000);
+        }, 3000);
 
         this.ambientMusic = document.getElementById('ambient-music') as HTMLAudioElement;
         this.ambientMusic.src = './static/lobby/terminal-cooler.mp3';
         this.ambientMusic.play();
+
+        this.registerCommands();
     }
 
-    private bootSequence: CodeLine[] = [
-        ///// ФАЗА 1: СТАНДАРТНАЯ ИНИЦИАЛИЗАЦИЯ /////
-        new CodeLine(">> [BOOT] BunkerOS v7.4.0-Ψ3 INITIALIZING...", "#00ff00", 400),
-        new CodeLine(">> BIOS: CRYPTECH SECURE BOOT v4.2", "#00ff00", 30),
-        new CodeLine(">> MEMTEST: 8743MB OK | 32MB RESERVED", "#00ff00", 30),
-        new CodeLine(">> Mounting /dev/core/bsys [LUKS-ENCRYPTED]", "#00ff00", 40),
-        new CodeLine(">> [!] UNEXPECTED HASH IN /boot/vmlinuz-3.2.1", "#ffff00", 200),
-        new CodeLine(">> OVERRIDE ACCEPTED [AUTH: BIOS_RECOVERY]", "#00ff00", 80),
-    
-        ///// ФАЗА 2: ПРОВЕРКА СИСТЕМ ЖИЗНЕОБЕСПЕЧЕНИЯ /////
-        new CodeLine(">> INITIALIZING LIFE SUPPORT MONITOR...", "#00ffff", 50),
-        new CodeLine(">> O2 LEVELS: 21.3% (+-0.5% variance)", "#00ff00", 30),
-        new CodeLine(">> CO2 SCRUBBERS: 78% EFFICIENCY", "#ffff00", 30),
-        new CodeLine(">> CRYOGENIC SYSTEMS:", "#00ff00", 40),
-        new CodeLine(">> POD #01: OPERATIONAL (-112°C)", "#00ff00", 30),
-        new CodeLine(">> POD #02: DEGRADED (THERMAL DRIFT +3°C)", "#ffff00", 30),
-        new CodeLine(">> POD #03: OFFLINE [LAST STATE: FAILED SEAL]", "#ff0000", 400),
-        new CodeLine(">> WARNING: POD #03 BIOSAMPLE CONTAINMENT BREACH", "#ff0000", 300),
-        new CodeLine(">> AUTO-QUARANTINE PROTOCOL ENGAGED", "#ffff00", 150),
-    
-        ///// ФАЗА 3: ЗАГРУЗКА КРИТИЧЕСКИХ СИСТЕМ /////
-        new CodeLine(">> LOADING SECURITY SUBSYSTEM...", "#00ff00", 60),
-        new CodeLine(">> BLACK ICE FIRMWARE v2.1.3 ONLINE", "#00ffff", 40),
-        new CodeLine(">> MOTION SENSORS: 142/144 ACTIVE", "#00ff00", 30),
-        new CodeLine(">> [!] SENSOR X-12/Y-88: PERMANENT OFFLINE", "#ffff00", 80),
-        new CodeLine(">> SCANNING SUBSYSTEMS:", "#00ff00", 50),
-        new CodeLine(">> RADIATION SHIELD: 98% INTEGRITY", "#00ff00", 30),
-        new CodeLine(">> AIRLOCKS: PRIMARY/ SECONDARY/ TERTIARY OK", "#00ff00", 30),
-        new CodeLine(">> HYDROPONICS: 73% OPERATIONAL", "#ffff00", 40),
-        new CodeLine(">> AI CORE: UNEXPECTED FIRMWARE SIGNATURE", "#ff0000", 300),
-    
-        ///// ФАЗА 4: АНОМАЛИИ И СБОИ /////
-        new CodeLine(">> [!] CORRUPTION IN /dev/mem/0xFA404", "#ff0000", 100),
-        new CodeLine(">> MEMORY FRAGMENT RECOVERED:", "#ffff00", 50),
-        new CodeLine(">> '...thermal event in sector Gamma...'", "#aaaaaa", 200),
-        new CodeLine(">> ATTEMPTING MEMORY REMAP...", "#ffff00", 40),
-        new CodeLine(">> WARNING: 47 BAD SECTORS FOUND", "#ff0000", 150),
-        new CodeLine(">> SWITCHING TO REDUNDANT CONTROLLER", "#00ff00", 80),
-    
-        ///// ФАЗА 5: ЗАГРУЗКА ДАННЫХ /////
-        new CodeLine(">> DECRYPTING ARCHIVE 'ATLAS'...", "#00ffff", 70),
-        new CodeLine(">> MAP SECTORS:", "#00ff00", 30),
-        new CodeLine(">> SECTOR A1: ████████████████████ 100%", "#00ff00", 30),
-        new CodeLine(">> SECTOR B2: ████████████         64%", "#ffff00", 40),
-        new CodeLine(">> SECTOR G7:                      0%", "#ff0000", 50),
-        new CodeLine(">> ERROR: GEODATA CRC MISMATCH IN SECTOR B2", "#ff0000", 200),
-        new CodeLine(">> FALLBACK TO LOCAL CACHE...", "#ffff00", 80),
-    
-        ///// ФАЗА 6: АКТИВАЦИЯ ЗАЩИТНЫХ СИСТЕМ /////
-        new CodeLine(">> ENGAGING DEFENSE PROTOCOLS...", "#00ffff", 60),
-        new CodeLine(">> AUTO-TURRETS: CALIBRATING...", "#00ff00", 40),
-        new CodeLine(">> NEUROTOXIN GENERATOR: STANDBY", "#ffff00", 50),
-        new CodeLine(">> [!] SUBSYSTEM X24: UNAUTHORIZED ACCESS", "#ff0000", 300),
-        new CodeLine(">> CONTAINMENT PROTOCOL 'IRON CURTAIN' ACTIVATED", "#ff0000", 150),
-        new CodeLine(">> FAILURE: SHIELD GENERATOR OFFLINE", "#ff0000", 200),
-        new CodeLine(">> FALLBACK TO MANUAL OVERRIDE...", "#ffff00", 100),
-    
-        ///// ФАЗА 7: ЛОГИ И АРТЕФАКТЫ /////
-        new CodeLine(">> DECODING LEGACY MESSAGES...", "#888888", 120),
-        new CodeLine(">> LOG_ENTRY 3421: 'They never fixed the heat sink...'", "#aaaaaa", 200),
-        new CodeLine(">> SIGNATURE: TECH_OFFICER_█▓  [ACCESS REVOKED]", "#555555", 100),
-        new CodeLine(">> AUDIO LOG EXTRACT: '...the frost follows us...'", "#888888", 250),
-        new CodeLine(">> UNKNOWN DATA FORMAT: 0xDEADFADE:BEEFCAFE", "#ff0000", 80),
-        new CodeLine(">> CORRELATING WITH PRIOR INCIDENTS...", "#ffff00", 150),
-    
-        ///// ФАЗА 8: ФИНАЛЬНЫЙ СТАТУС /////
-        new CodeLine(">> SYSTEM STATUS: OPERATIONAL [WITH ERRORS]", "#ffff00", 200),
-        new CodeLine(">> ACTIVE ANOMALIES: 14 CRITICAL, 27 WARNINGS", "#ff0000", 150),
-        new CodeLine(">> SECURITY STATUS: COMPROMISED [TIER 3]", "#ff0000", 200),
-        new CodeLine(">> RECOMMENDED ACTION: IMMEDIATE MANUAL INSPECTION", "#ff0000", 300),
-        new CodeLine(">> BOOT CYCLE COMPLETE", "#00ff00", 100),
-    
-        ///// ФАЗА 9: ФОНТАННЫЕ ПРОЦЕССЫ /////
-        new CodeLine(">> [BACKGROUND] GHOST PROCESS DETECTED", "#555555", 80),
-        new CodeLine(">> UNREGISTERED ENTITY IN VENTILATION SHAFT 4B", "#ff0000", 120),
-        new CodeLine(">> THERMAL ANOMALY: ROOM X-12/Y-88 (+3.7°C)", "#ffff00", 100),
-        new CodeLine(">> AUTOMATIC PURGE SCHEDULED [ETA 47H 59M]", "#00ff00", 200),
-        new CodeLine(">> WARNING: UNKNOWN PROCESS ACCESSING CAMERAS", "#ff0000", 150),
-        new CodeLine(">> LAST MESSAGE: '...it's in the walls...'", "#aaaaaa", 300),
-        new CodeLine(">> SYSTEM READY", "#00ff00", 1500),
-        
-    ];
-    private bunkerOSSequence: CodeLine[] = [
-        // Постепенное проявление арта сверху вниз с эффектом "сканирования"
-        new CodeLine("           ▄▄▄▄▄▄▄▄▄▄▄▄           ", "#00ffff", 25),
-        new CodeLine("       ▄▄██▀▀▀▀▀▀▀▀▀▀▀▀██▄▄       ", "#00ffff", 25),
-        new CodeLine("     ▄██▀▄              ▄▀██▄     ", "#00ffff", 25),
-        new CodeLine("   ▄██▀▄███            ███▄▀██▄   ", "#00ffff", 25),
-        new CodeLine("  ██▀▄██████          ██████▄▀██  ", "#00ffff", 25),
-        new CodeLine(" ██ █████████▄      ▄█████████ ██ ", "#00ffff", 25),
-        new CodeLine("██ ███████████▄    ▄███████████ ██", "#00ffff", 25),
-        new CodeLine("██▄███████████▀▄▄▄▄▀███████████▄██", "#00ffff", 25),
-        new CodeLine("█████████████ ██████ █████████████", "#00ffff", 25),
-        new CodeLine("██            ██████            ██", "#00ffff", 25),
-        new CodeLine("██             ▀▀▀▀             ██", "#00ffff", 25),
-        new CodeLine("▀█            ██████▄           ██", "#00ffff", 25),
-        new CodeLine(" ██         ▄████████▄         ██ ", "#00ffff", 25),
-        new CodeLine("  ██▄      ▄██████████▄      ▄██  ", "#00ffff", 25),
-        new CodeLine("   ▀██▄   ▄████████████▄   ▄██▀   ", "#00ffff", 25),
-        new CodeLine("     ▀██▄ ▀████████████▀ ▄██▀     ", "#00ffff", 25),
-        new CodeLine("       ▀▀██▄▄▄██████▄▄▄██▀▀       ", "#00ffff", 25),
-        new CodeLine("           ▀▀▀▀▀▀▀▀▀▀▀▀           ", "#00ffff", 25),
-        new CodeLine("______            _        _        _______  _______     _______  _______ ", "#00ffff", 25),
-        new CodeLine("(  ___ \\ |\\     /|( (    /|| \\    /\\(  ____ \\(  ____ )   (  ___  )(  ____ \\", "#00ffff", 25),
-        new CodeLine("| (   ) )| )   ( ||  \\  ( ||  \\  / /| (    \\/| (    )|   | (   ) || (    \\/", "#00ffff", 25),
-        new CodeLine("| (__/ / | |   | ||   \\ | ||  (_/ / | (__    | (____)|   | |   | || (_____ ", "#00ffff", 25),
-        new CodeLine("|  __ (  | |   | || (\\ \\) ||   _ (  |  __)   |     __)   | |   | |(_____  )", "#00ffff", 25),
-        new CodeLine("| (  \\ \\ | |   | || | \\   ||  ( \\ \\ | (      | (\\ (      | |   | |      ) |", "#00ffff", 25),
-        new CodeLine("| )___) )| (___) || )  \\  ||  /  \\ \\| (____/\\| ) \\ \\__ _ | (___) |/\\____) |", "#00ffff", 25),
-        new CodeLine("|/ \\___/ (_______)|/    )_)|_/    \\/(_______/|/   \\__/(_)(_______)\\_______)", "#00ffff", 0),
-    ]
-
-    private waitForMediaLoaded(mediaElement: HTMLMediaElement): Promise<void> {
-        return new Promise((resolve, reject) => {
-            if (mediaElement.readyState >= 3) {
-                resolve();
-            } else {
-                mediaElement.addEventListener('canplaythrough', () => resolve(), { once: true });
-                mediaElement.addEventListener('error', () => reject(new Error('Media failed to load')), { once: true });
-            }
-        });
-    }
     public async bootUp() {
         this.terminal.dataset.turnedOn = "true";
+
+        console.log();
+        const start = performance.now();
+        await this.writeCode(sequences.bootSequence);
+        const end = performance.now();
+        console.log(`Время запуска: ${(end - start).toFixed(2)} мс`);
     
-        for (const code of this.bootSequence) {
-            if (this.isCleaningUp) return; // Stop execution if cleaning up
-            await this.writeLine(code);
-        }
-    
-        this.lines.innerHTML = "";
-    
+        this.clearTerminal();
+
         if (!this.isCleaningUp) {
             this.startUpSound.play();
         }
+
+        await this.writeCode(sequences.bunkerOSSequence, false, "center")
+
+        setTimeout(async() => {
+            await this.clearTerminal(false);
+            await this.hello();
+            this.startInteraction();
+        }, 3000)
+    }
+
+    public async hello() {
+        await this.writeCode(sequences.helloSequence, false, undefined, true);
+    }
+
+    private registerCommands() {
+        // Регистрация команды "kick"
+        this.register("kick", {
+          validate: (args) => args.length === 1 && !isNaN(Number(args[0])),
+          execute: (args) => this.kickPlayer(Number(args[0]))
+        });
     
-        for (const code of this.bunkerOSSequence) {
-            if (this.isCleaningUp) return; // Stop execution if cleaning up
-            await this.writeLine(code, "center");
+        // Регистрация команды "start"
+        this.register("start", {
+          validate: (args) => args.length === 0,
+          execute: this.startGame.bind(this)
+        });
+    
+        // Регистрация команды "exit"
+        this.register("exit", {
+          validate: (args) => args.length === 0,
+          execute: this.exitLobby.bind(this)
+        });
+    
+        // Регистрация команды "v1"
+        this.register("v1", {
+          validate: (args) => args.length === 0,
+          execute: this.v1.bind(this)
+        });
+    
+        // Регистрация команды "svintus"
+        this.register("svintus", {
+          validate: (args) => args.length === 0,
+          execute: this.svintus.bind(this)
+        });
+
+        this.register("help", {
+            validate: (args) => args.length === 0,
+            execute: this.help.bind(this)
+        })
+
+        this.register("users", {
+            subcommands: new Map([
+                ["show", {
+                    validate: args => args.length === 0,
+                    execute: this.showUsers.bind(this)
+                }]
+            ])
+        });
+    }
+
+    private async showUsers(): Promise<void> {
+        this.writeCode(new sequences.Line("[USERS] Список пользователей:", "#00ff00"))
+        this.writeCode(new sequences.Line("[USERS] Пользователь #1: admin", "#00ff00"))
+    }
+
+    private async help(): Promise<void> {
+        this.writeCode(sequences.helpSequence);
+    }
+
+    private async startGame(): Promise<void>{
+        this.writeCode(new sequences.Line("[INIT] Инициализация протокола запечатывания. Приятного пребывания!", "#00ff00", 2000));
+    }
+
+    private async exitLobby(): Promise<void> {
+        this.writeCode(new sequences.Line("[ABORT] Инициализация протокола запечатывания отменена. Всего доброго!", "#ffff00", 2000));
+    }
+
+    private async svintus(): Promise<void> {
+        this.writeCode(new sequences.Line("[SVINTUS] СВИИИИИИНТУС ПРИДЕЕЕЕЕЕЕЕЕТ", "#ff0000", 25));
+        this.writeCode(sequences.svintusSequence, true);
+    }
+
+    private async v1(): Promise<void> {
+        this.writeCode(new sequences.Line("[V1] оооо монетки делают динь-динь", "#ff0000", 25));
+        this.writeCode(sequences.v1Sequence, true);
+    }
+
+    private async kickPlayer(userNumber: number): Promise<void> {
+        if (this.getPlayer(userNumber)) {
+            this.writeCode(new sequences.Line(`[USER] Удаляем пользователя #${userNumber}...`, "#ffff00"));
+            const request = true; // add real request
+            if (request) {
+                this.writeCode(new sequences.Line(`[SUCCESS] Пользователь #${userNumber} удалён`, "#00ff00"));
+            }
+        }
+        else {
+            const output = new sequences.Line("[ERROR] Пользователь не найден!", "#ff0000")
         }
     }
-    private isCleaningUp: boolean = false;
 
+    private getPlayer(userNumber: number){
+        return ('9')
+    }
+    
     public cleanup(): void {
         // Set the cleanup flag
         this.isCleaningUp = true;
@@ -209,32 +196,143 @@ class Lobby {
         // Clear intervals or timeouts if any
         // Example: clearInterval(this.someIntervalId);
     }
-    
-    async writeLine(code: CodeLine, justify: string = "start", keyByKey: boolean = false) {
-        if (this.isCleaningUp) return; // Stop execution if cleaning up
-    
-        const newLine = document.createElement('pre');
-        newLine.style.color = code.color;
-        newLine.style.textShadow = "0 0 10px " + code.color;
-        newLine.style.justifySelf = justify;
-    
-        if (this.lines) {
-            this.lines.appendChild(newLine);
-            this.lines.scrollTop = this.lines.scrollHeight;
-        }
-    
-        if (keyByKey) {
-            for (const char of code.text) {
-                if (this.isCleaningUp) return; // Stop execution if cleaning up
-                newLine.innerText += char;
-                await new Promise(resolve => setTimeout(resolve, 20));
+
+    public async startInteraction() {
+        this.lines.style.overflow = "auto";
+        AkronymAnimator.changeVisibility(this.userInput.parentElement, "visible", "fade-in", 0)
+        AkronymEventRouter.add(document, "keydown", (event: Event) => {
+            const keyboardEvent = event as KeyboardEvent;
+            if (keyboardEvent.key === "Enter") {
+                this.newCommandSound.stop();
+                const input = this.userInput.value;
+                this.writeCode(new sequences.Line("> " + input, "#00ff00", 0));
+                this.run(input);
+                this.userInput.value = "";
+                this.lines.scrollTop = this.lines.scrollHeight;
+                this.newCommandSound.play();
             }
-        } else {
-            newLine.innerText = code.text;
+        })
+    }
+
+    register(name: string, cmd: Command) {
+        this.cmds.set(name, cmd);
+    }
+  
+    async run(cmdLine: string) {
+        const parts = cmdLine.trim().split(/\s+/);
+        let cmd = this.cmds.get(parts[0]);
+        let args = parts.slice(1);
+      
+        while (cmd?.subcommands && args.length) {
+          const sub = cmd.subcommands.get(args[0]);
+          if (!sub) break;
+          cmd = sub;
+          args = args.slice(1);
+        }
+      
+        if (!cmd?.execute || !cmd.validate?.(args)) {
+          const msg = cmd ? "[ERROR] Некорректные параметры" : "[ERROR] Неизвестная команда";
+          return this.writeCode(new sequences.Line(msg, "#ff0000"));
+        }
+      
+        await cmd.execute(args);
+      }
+    
+    async clearTerminal(instant: boolean = true) {
+        const userInput = this.lines.lastElementChild;
+        if (instant) {
+            this.lines.innerHTML = "";
+            if (userInput) this.lines.appendChild(userInput);
+            return;
         }
     
-        await new Promise(resolve => setTimeout(resolve, code.duration));
+        // постепенно снизу-вверх, не трогая последний элемент
+        while (this.lines.children.length > 1) {
+            const idx = this.lines.children.length - 2;
+            const node = this.lines.children[idx] as HTMLElement;
+    
+            if (node.children.length > 0) {
+                // внутри обёртки: удаляем последний вложенный элемент
+                node.removeChild(node.children[node.children.length - 1]);
+            } else {
+                // пустая обёртка или обычная строка: удаляем саму ноду
+                this.lines.removeChild(node);
+            }
+    
+            await new Promise(resolve => setTimeout(resolve, 25));
+        }
     }
     
     
+    
+    
+    async writeCode(code: sequences.Line | sequences.Line[], isSmallASCIIArt: boolean = false, align: string | undefined = undefined, keyByKey: boolean = false) {
+        if (this.isCleaningUp) return;
+    
+        const linesToWrite = Array.isArray(code) ? code : [code];
+        let wrapper: HTMLElement | null = null;
+    
+        if (align != undefined || isSmallASCIIArt) {
+            wrapper = document.createElement('div');
+            if (align) {
+                wrapper.style.display = 'flex';
+                wrapper.style.flexDirection = 'column';
+                wrapper.style.alignItems = align;
+            }
+    
+            if (isSmallASCIIArt) {
+                wrapper.style.fontSize = '6px';
+            }
+    
+            if (this.lines) {
+                this.lines.insertBefore(wrapper, this.userInput.parentElement);
+            }
+        }
+    
+        for (const Line of linesToWrite) {
+            let newLine: HTMLPreElement;
+    
+            if (Line.overwrite) {
+                newLine = this.lines.children[this.lines.children.length - 2] as HTMLPreElement;
+                newLine.innerText = "";
+                newLine.style.color = Line.color;
+                newLine.style.textShadow = "0 0 10px " + Line.color;
+            } else {
+                newLine = document.createElement('pre');
+                newLine.style.color = Line.color;
+                newLine.style.textShadow = "0 0 10px " + Line.color;
+                if (align != undefined) {
+                    newLine.style.alignSelf = align;
+                }
+    
+                if (wrapper) {
+                    wrapper.appendChild(newLine);
+                } else {
+                    if (this.lines) {
+                        this.lines.insertBefore(newLine, this.userInput.parentElement);
+                    }
+                }
+            }
+            this.lines.scrollTop = this.lines.scrollHeight;
+    
+            if (keyByKey) {
+                this.typingSound.play();
+                this.typingSound.on('ended', this.repeatSound);
+                for (const char of Line.text) {
+                    if (this.isCleaningUp) return;
+                    newLine.innerText += char;
+                    await new Promise(resolve => setTimeout(resolve, 10));
+                }
+            } else {
+                newLine.innerText = Line.text;
+            }
+            this.typingSound.stop();
+            this.typingSound.off('ended', this.repeatSound);
+
+            if (Line.duration !== 0) {
+                await new Promise(resolve => setTimeout(resolve, Line.duration));
+            }
+        }
+    }
 }
+
