@@ -133,6 +133,7 @@ class MainMenu {
         }
     
         console.log('Creating lobby...');
+        // this.navigateTo(`lobby`);
         APIMain.createUser(username).then((user) => {
             return APIMain.createLobby(username, user.id);
         }).then((lobby) => {
@@ -172,6 +173,7 @@ class MainMenu {
         }
     
         console.log('Joining lobby...');
+        // this.navigateTo(`lobby`);
         APIMain.createUser(username).then((user) => {
             return APIMain.joinLobby(lobbyID);
         }).then((lobby) => {
