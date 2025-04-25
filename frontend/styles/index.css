@@ -1,0 +1,361 @@
+@import url(../akronym/styles/akronym-animations.css);
+
+/* ==================== FONTS ==================== */
+@font-face {
+    font-family: 'TheCrewPro';
+    src: url('../static/fonts/TheCrewPro.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Cornerita';
+    src: url('../static//fonts/Cornerita-Thin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Cornerita';
+    src: url('../static//fonts/Cornerita-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+	font-family: 'Cornerita';
+    src: url('../static//fonts/Cornerita-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Cornerita';
+    src: url('../static//fonts/Cornerita-Black.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Cornerita VF';
+    src: url('../static//fonts/Cornerita-VF.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: normal;
+}
+/* ==================== FONTS ==================== */
+
+/* ==================== GENERAL ==================== */
+:root {
+    --main-color: black;
+    --less-main-color: #2c2c2c;
+    --secondary-color: white;
+    --less-secondary-color: #dadada;
+    --theme-color: #f8ba00;
+    --error-color: #9c0000;
+
+    --hover-transition: 0.25s ease-out;
+}
+
+html {
+    height: 100%;
+
+    font-family: 'Cornerita VF', sans-serif;
+	font-size: 32px;
+    color: var(--secondary-color);
+}
+
+body {
+    height: 100%;
+    
+    background-color: var(--main-color);
+}
+
+* {
+    margin: 0;
+    border: none;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+[data-hidden] {
+    visibility: hidden;
+}
+
+::selection {
+    background-color: var(--main-color);
+    color: var(--theme-color);
+}
+
+.error
+{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+
+    text-align: center;
+    color: var(--error-color);
+    font-weight: bold;
+}
+/* ==================== GENERAL ==================== */
+
+/* ==================== ERROR WINDOW ELEMENT ==================== */
+.error-window {
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 999;
+
+    width: 400px;
+    border: solid 2px var(--error-color);
+    padding: 20px;
+
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    color: var(--error-color);
+
+    border-radius: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+}
+/* ==================== ERROR WINDOW ELEMENT ==================== */
+
+/* ==================== MODAL WINDOW ELEMENT ==================== */
+.modal-window-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 5;
+
+    width: 100%;
+    height: 100%;
+
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+}
+.modal-window {
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    transform: translate(-50%, 50%);
+    z-index: 10;
+
+    width: 400px;
+    border: solid 2px var(--theme-color);
+
+    background-color: var(--main-color);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    overflow: visible;
+
+    & .bar{
+        position: relative;
+        width: 100%;
+        height: 36px;
+        border: none;
+        
+        background-color: var(--theme-color);
+
+        color: var(--main-color);
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        & button.close{
+            position: absolute;
+            top: 0;
+            right: 0;
+
+            width: unset;
+            height: 100%;
+            aspect-ratio: 1 / 1;
+            border: none;
+
+            & svg {
+                width: 100%;
+                height: 100%;
+            }
+        }
+    }
+
+    & .content {
+        width: 100%;
+        height: 100%;
+        padding-top: 25px;
+        padding-bottom: 25px;
+        padding-left: 30px;
+        padding-right: 30px;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 25px;
+    }
+}
+/* ==================== MODAL WINDOW ELEMENT ==================== */
+
+/* ==================== BUTTON ELEMENT ==================== */
+button {
+    position: relative;
+    width: 200px;
+    height: 56px;
+	border: 2px solid var(--theme-color);
+
+	background-color: var(--theme-color);
+	cursor: pointer;
+
+	font-family: inherit;
+    font-size: inherit;
+    font-weight: bold;
+    color: var(--main-color);
+	text-align: center;
+
+	transition: background-color var(--hover-transition), color var(--hover-transition);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+	&:is(:hover, :focus){
+		background-color: black;
+		outline: none;
+
+		color: var(--theme-color);
+	}
+
+	&::selection{
+		background-color: var(--theme-color);
+
+		color: black;
+	}
+
+    & svg {
+        position: absolute;
+
+        width: 75%;
+        height: 75%;
+    }
+
+    & path {
+        stroke: var(--main-color);
+        stroke-width: 2px;
+
+        fill: var(--main-color);
+
+        transition: fill var(--hover-transition), stroke var(--hover-transition);
+    }
+
+    &:is(:hover, :focus) path {
+        stroke: var(--theme-color);
+        stroke-width: 2;
+
+        fill: var(--theme-color);
+    }
+}
+/* ==================== BUTTON ELEMENT ==================== */
+
+/* ==================== INPUT ELEMENT ==================== */
+input[type="text"] {
+	width: 300px;
+	height: 48px;
+	border: 2px solid var(--theme-color);
+    padding-left: 10px;
+    padding-right: 10px;
+
+    background-color: var(--main-color);
+    border-radius: 20px;
+	cursor: text;
+    user-select: none;
+
+	font-family: inherit;
+	font-size: inherit;
+    font-weight: bold;
+    color: var(--theme-color);
+	text-align: center;
+
+	transition: background-color var(--hover-transition), color var(--hover-transition);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+	&::placeholder {
+		color: currentColor;
+
+		transition: color var(--hover-transition);
+	}
+	&::selection {
+		background-color: var(--main-color);
+
+		color: var(--theme-color);
+	}
+	&:is(:hover, :focus) {
+		background-color: var(--theme-color);
+		outline: none;
+
+		color: var(--main-color);
+	}
+
+	&:is(:hover, :focus)::placeholder {
+		color: var(--main-color);
+	}
+}
+/* ==================== INPUT ELEMENT ==================== */
+
+/* ==================== ROOT LEVEL ==================== */
+#cover {
+    position: fixed;
+    z-index: 5;
+
+    width: 100%;
+    height: 100%;
+
+    background-color: var(--main-color);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#root {
+    width: 100%;
+    height: 100%;
+}
+
+button#music-status {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+
+    width: 75px;
+    height: 75px;
+    margin: 50px;
+
+    border-radius: 100px;
+    
+    &[data-mute="true"] svg#pause,
+    &[data-mute="false"] svg#play {
+        opacity: 1;
+    }
+    &[data-mute="true"] svg#play,
+    &[data-mute="false"] svg#pause {
+        opacity: 0;
+    }
+
+    & path{
+        fill: none;
+    }
+
+    &:is(:hover, :focus) path {
+        fill: none;
+    }
+}
+/* ==================== ROOT LEVEL ==================== */

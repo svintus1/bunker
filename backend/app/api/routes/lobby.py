@@ -28,7 +28,7 @@ def join_lobby(
     user = user_crud.get_user_by_id(user_id)
     if not user:
         raise HTTPException(status_code=400,
-                             detail="The user with this ID is not found")
+                            detail="The user with this ID is not found")
     player = player_crud.create_player(user)
     if not player:
         raise HTTPException(status_code=500,
