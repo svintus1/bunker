@@ -7,7 +7,7 @@ from app.models import LobbyCreate, Lobby
 
 router = APIRouter(prefix="/lobby", tags=["lobby"])
 
-@router.post("/create")
+@router.post("/create", description="Create new lobby. Accepts lobby `name` and `creator_id`.")
 def create_lobby(
     name: Annotated[str, Body(title="Lobby name", max_length=255)],
     creator_id: Annotated[uuid.UUID, Body(title="Creator user UUID")],
@@ -17,7 +17,7 @@ def create_lobby(
     return lobby_service.create_lobby(lobby_in)
 
 
-@router.post("/join/")
+@router.post("/join/", description="Join existing lobby. Accepts `lobby_id` and `user_id` of user that wants to join.")
 def join_lobby(
     lobby_id: Annotated[str, Body()],
     user_id: Annotated[uuid.UUID, Body(title="User UUID")],
