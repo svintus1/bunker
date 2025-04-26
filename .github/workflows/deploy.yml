@@ -7,7 +7,7 @@ on:
     
 jobs:
   build:
-    runs-on: [ self-hosted, staging ]
+    runs-on: [ self-hosted, development ]
     environment: development
     steps:
       - name: Синхронизация проекта с репозиторием
@@ -41,14 +41,14 @@ jobs:
 
   test:
     needs: build
-    runs-on: [ self-hosted, staging ]
+    runs-on: [ self-hosted, development ]
     steps:
       - name: Тут будут тесты
         run: sleep 10
   
   stage:
     needs: test
-    runs-on: [ self-hosted, staging ]
+    runs-on: [ self-hosted, development ]
     steps:
       - name: Тестовый запуск проекта
         run: |
