@@ -39,6 +39,10 @@ class Lobby(LobbyCreate):
     A group of players joins together in lobby.
     Lobby always has at least one player (creator)."""
 
+    id: str = Field(
+        default_factory=lambda: str(uuid.uuid4()),
+        primary_key=True
+    )
     status: Literal["waiting", "playing", "finishing"] = "waiting"
     player_ids: list[str]
 
@@ -49,6 +53,10 @@ class Player(BaseJsonModel):
     Represents a User who has joined a Lobby. While User contains persistent data,
     Player contains session-specific data for the game."""
 
+    id: str = Field(
+        default_factory=lambda: str(uuid.uuid4()),
+        primary_key=True
+    )
     user: User
     lobby_id: str | None = None
 
