@@ -17,9 +17,9 @@ def create_lobby(
     return lobby_service.create_lobby(lobby_in)
 
 
-@router.post("/join/{lobby_id}")
+@router.post("/join/")
 def join_lobby(
-    lobby_id: str,
+    lobby_id: Annotated[str, Body()],
     user_id: Annotated[uuid.UUID, Body(title="User UUID")],
     lobby_service: LobbyServiceDep,
     player_crud: PlayerCRUDDep,
