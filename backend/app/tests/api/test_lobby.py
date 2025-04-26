@@ -41,7 +41,7 @@ def test_join_lobby_success(api_client, mock_lobby_crud, mock_user_crud, mock_pl
     mock_lobby_crud.get_lobby.return_value = lobby
     mock_player_crud.get_player.return_value = player
 
-    response = api_client.post(f"{settings.API_STR}/lobby/join/{lobby_id}", json=str(user_id))
+    response = api_client.post(f"{settings.API_STR}/lobby/join/", json={"lobby_id": str(lobby_id), "user_id": str(user_id)})
     assert response.status_code == 200
 
 def test_join_lobby_user_not_found(api_client, mock_user_crud):
@@ -50,7 +50,7 @@ def test_join_lobby_user_not_found(api_client, mock_user_crud):
 
     mock_user_crud.get_user_by_id.return_value = None
 
-    response = api_client.post(f"{settings.API_STR}/lobby/join/{lobby_id}", json=str(user_id))
+    response = api_client.post(f"{settings.API_STR}/lobby/join/", json={"lobby_id": str(lobby_id), "user_id": str(user_id)})
     assert response.status_code == 400
     assert response.json()["detail"] == "The user with this ID is not found"
 
@@ -62,7 +62,7 @@ def test_join_lobby_player_creation_failed(api_client, mock_user_crud, mock_play
     mock_user_crud.get_user_by_id.return_value = user
     mock_player_crud.create_player.return_value = None
 
-    response = api_client.post(f"{settings.API_STR}/lobby/join/{lobby_id}", json=str(user_id))
+    response = api_client.post(f"{settings.API_STR}/lobby/join/", json={"lobby_id": str(lobby_id), "user_id": str(user_id)})
     assert response.status_code == 500
     assert "Failed to create player from user" in response.json()["detail"]
 
@@ -75,6 +75,6 @@ def test_join_lobby_join_failed(api_client, mock_user_crud, mock_player_crud):
     mock_user_crud.get_user_by_id.return_value = user
     mock_player_crud.create_player.return_value = player
 
-    response = api_client.post(f"{settings.API_STR}/lobby/join/{lobby_id}", json=str(user_id))
+    response = api_client.post(f"{settings.API_STR}/lobby/join/", json={"lobby_id": str(lobby_id), "user_id": str(user_id)})
     assert response.status_code == 500
     assert "Failed to join lobby" in response.json()["detail"]
