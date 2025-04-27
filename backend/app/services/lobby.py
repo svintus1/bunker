@@ -64,15 +64,11 @@ class LobbyService:
         
         Return found Player or None if not found."""
         lobby = self.lobbies.get_lobby(lobby_id)
-        print(user_id)
         for id in lobby.player_ids:
-            print(id)
             player = self.players.get_player(id)
-            print(player.user)
+
             if str(player.user.id) == str(user_id):
                 return player
-            else:
-                print(f"{player.user.id}!={user_id}")
 
         return None
 

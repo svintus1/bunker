@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Body, HTTPException
 
 from app.api.deps import LobbyServiceDep, PlayerCRUDDep, UserCRUDDep
-from app.models import LobbyCreate, Lobby, LobbyOutput
+from app.models import LobbyCreate, LobbyOutput
 
 router = APIRouter(prefix="/lobby", tags=["lobby"])
 
