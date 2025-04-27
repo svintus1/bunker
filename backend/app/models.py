@@ -1,6 +1,7 @@
 import uuid
 from typing import Literal
 
+from pydantic import BaseModel
 from sqlmodel import Field, SQLModel
 from redis_om import JsonModel
 from redis_om import get_redis_connection
@@ -25,6 +26,11 @@ class BaseJsonModel(JsonModel):
     class Meta:
         database = get_redis_connection(url=str(settings.REDIS_DATABASE_URI))
 
+    # Make the id field a kind of a reference to pk as I couldn't override it completely
+    @property
+    def id(self) -> str:
+        return self.pk
+
 
 class LobbyCreate(BaseJsonModel):
     """Lobby model to receive via API on creation."""
@@ -41,6 +47,19 @@ class Lobby(LobbyCreate):
 
     status: Literal["waiting", "playing", "finishing"] = "waiting"
     player_ids: list[str]
+
+
+class LobbyOutput(BaseModel):
+    """Lobby model for output in API, cleared of `pk` and `additionalProp1` fields created by redis-om."""
+
+    id: str
+    name: str
+    creator_id: uuid.UUID
+    status: Literal["waiting", "playing", "finishing"] = "waiting"
+    player_ids: list[str]
+
+    class Config:
+        extra = "ignore"
 
 
 class Player(BaseJsonModel):

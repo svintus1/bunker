@@ -18,7 +18,7 @@ services:
       dockerfile: ./Dockerfile
     develop:
       watch:
-        - action: sync+restart
+        - action: sync
           path: ./backend
           target: /opt/app/
           ignore:
