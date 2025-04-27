@@ -1,7 +1,7 @@
 from typing import Annotated
 from fastapi import Depends
 from app.crud import UserCRUD, LobbyCRUD, PlayerCRUD
-from app.core.database import PgSessionDep, RedisConnectionDep
+from app.core.database import PgSessionDep
 from app.services.lobby import LobbyService
 from app.services.player import PlayerService
 
