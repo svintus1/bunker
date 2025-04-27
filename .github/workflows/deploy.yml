@@ -59,4 +59,4 @@ jobs:
       - name: Тестовый запуск проекта
         run: |
           ENV=prod \
-          docker stack deploy -c stack.yml dev
+          docker stack deploy -d -c stack.yml dev
