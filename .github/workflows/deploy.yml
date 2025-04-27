@@ -41,10 +41,10 @@ jobs:
 
       - name: Сборка образов и пуш
         run: |
-          docker build -t dev.registry.local:5000/frontend:latest -f frontend/Dockerfile frontend/
-          docker build -t dev.registry.local:5000/backend:latest -f backend/Dockerfile backend/
-          docker push dev.registry.local:5000/frontend:latest
-          docker push dev.registry.local:5000/backend:latest
+          docker build -t prod.registry.local:5000/frontend:latest -f frontend/Dockerfile frontend/
+          docker build -t prod.registry.local:5000/backend:latest -f backend/Dockerfile backend/
+          docker push prod.registry.local:5000/frontend:latest
+          docker push prod.registry.local:5000/backend:latest
   test:
     needs: build
     runs-on: [ self-hosted, development ]
@@ -58,5 +58,5 @@ jobs:
     steps:
       - name: Тестовый запуск проекта
         run: |
-          ENV=DEV \
+          ENV=prod \
           docker stack deploy -c stack.yml dev
