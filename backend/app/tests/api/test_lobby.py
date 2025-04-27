@@ -8,10 +8,9 @@ from app.core.config import settings
 
 def test_create_lobby_success(api_client: TestClient, mock_lobby_crud, mock_user_crud, mock_player_crud):
     creator_id = uuid.uuid4()
-    player_pk = "player-pk"
     user = User(name="testuser", id=creator_id)
-    player = Player(user=user, pk=player_pk)
-    # The lobby is created with empty player_ids, then updated with the creator's player_pk
+    player = Player(user=user)
+    # The lobby is created with empty player_ids, then updated with the creator's player_id
     lobby_created = Lobby(name="testlobby", creator_id=creator_id, status="waiting", player_ids=[])
 
     # Set up mocks in the order the service expects
@@ -26,22 +25,31 @@ def test_create_lobby_success(api_client: TestClient, mock_lobby_crud, mock_user
     data = response.json()
     assert data["name"] == "testlobby"
     assert str(data["creator_id"]) == str(creator_id)
-    assert player_pk in data["player_ids"]
+    assert player.id in data["player_ids"]
 
 def test_join_lobby_success(api_client, mock_lobby_crud, mock_user_crud, mock_player_crud):
     lobby_id = "lobby-uuid"
     user_id = uuid.uuid4()
-    creator_id=uuid.uuid4()
+    creator_id = uuid.uuid4()
     user = User(name="testuser", id=user_id)
-    player = Player(user=user, pk="player-pk")
-    lobby = Lobby(name="testlobby", creator_id=creator_id, status="waiting", player_ids=["creator-pk"])
+    player = Player(user=user)
+    lobby = Lobby(name="testlobby", creator_id=creator_id, status="waiting", player_ids=["creator-id"])
 
     mock_user_crud.get_user_by_id.return_value = user
     mock_player_crud.create_player.return_value = player
     mock_lobby_crud.get_lobby.return_value = lobby
     mock_player_crud.get_player.return_value = player
 
+    def get_player_side_effect(player_id):
+        if player_id == "creator-id":
+            # Return a player with a different user
+            return Player(user=User(name="other", id=uuid.uuid4()))
+        return player
+
+    mock_player_crud.get_player.side_effect = get_player_side_effect
+
     response = api_client.post(f"{settings.API_STR}/lobby/join/", json={"lobby_id": str(lobby_id), "user_id": str(user_id)})
+    print(response.json())
     assert response.status_code == 200
 
 def test_join_lobby_user_not_found(api_client, mock_user_crud):
@@ -70,7 +78,7 @@ def test_join_lobby_join_failed(api_client, mock_user_crud, mock_player_crud):
     lobby_id = "lobby-uuid"
     user_id = uuid.uuid4()
     user = User(name="testuser", id=user_id)
-    player = Player(user=user, pk="player-pk")
+    player = Player(user=user, id="player-id")
 
     mock_user_crud.get_user_by_id.return_value = user
     mock_player_crud.create_player.return_value = player

@@ -1,9 +1,7 @@
-import pytest
 import uuid
 
-from sqlmodel import Session
 
-from app.models import User, UserCreate
+from app.models import UserCreate
 from app.crud import UserCRUD
 from app.tests.utils.utils import random_lower_string
 
