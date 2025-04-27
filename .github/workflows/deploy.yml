@@ -3,11 +3,11 @@ name: Deploy
 on:
   push:
     branches:
-      -  develop
+      - feature/docker-stack
     
 jobs:
   build:
-    runs-on: [ self-hosted, development ]
+    runs-on: [ self-hosted, production ]
     environment: development
     steps:
       - name: Синхронизация проекта с репозиторием
@@ -39,6 +39,12 @@ jobs:
           REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
           EOF
 
+      - name: Сборка образов и пуш
+        run: |
+          docker build -t dev.registry.local:5000/frontend:latest -f frontend/Dockerfile frontend/
+          docker build -t dev.registry.local:5000/backend:latest -f backend/Dockerfile backend/
+          docker push dev.registry.local:5000/frontend:latest
+          docker push dev.registry.local:5000/backend:latest
   test:
     needs: build
     runs-on: [ self-hosted, development ]
@@ -52,5 +58,5 @@ jobs:
     steps:
       - name: Тестовый запуск проекта
         run: |
-          COMPOSE_PROJECT_NAME=${{ github.ref_name }} \
-          docker compose -f ${{ github.workspace }}/compose.yml up -d --build --force-recreate
+          ENV=DEV \
+          docker stack deploy -c stack.yml dev
