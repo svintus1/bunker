@@ -47,14 +47,14 @@ jobs:
           docker push prod.registry.local:5000/backend:latest
   test:
     needs: build
-    runs-on: [ self-hosted, development ]
+    runs-on: [ self-hosted, production ]
     steps:
       - name: Тут будут тесты
         run: sleep 10
   
   stage:
     needs: test
-    runs-on: [ self-hosted, development ]
+    runs-on: [ self-hosted, production ]
     steps:
       - name: Тестовый запуск проекта
         run: |
