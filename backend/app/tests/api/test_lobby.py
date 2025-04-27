@@ -1,4 +1,5 @@
 import uuid
+from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 
@@ -86,3 +87,23 @@ def test_join_lobby_join_failed(api_client, mock_user_crud, mock_player_crud):
     response = api_client.post(f"{settings.API_STR}/lobby/join/", json={"lobby_id": str(lobby_id), "user_id": str(user_id)})
     assert response.status_code == 500
     assert "Failed to join lobby" in response.json()["detail"]
+
+def test_join_lobby_already_joined(api_client, mock_lobby_crud, mock_user_crud, mock_player_crud):
+    lobby_id = "lobby-uuid"
+    creator_id = uuid.uuid4()
+    user = User(name="testuser", id=creator_id)
+    player = Player(user=user, id="player-id")
+    lobby = Lobby(name="testlobby", creator_id=creator_id, status="waiting", player_ids=["player-id"])
+
+    mock_user_crud.get_user_by_id.return_value = user
+    mock_lobby_crud.get_lobby.return_value = lobby
+    mock_player_crud.get_player.return_value = player
+
+    # Patch only for this test
+    with patch("app.services.lobby.LobbyService.find_player_by_user_id", return_value=player):
+        response = api_client.post(
+            f"{settings.API_STR}/lobby/join/",
+            json={"lobby_id": str(lobby_id), "user_id": str(creator_id)}
+        )
+        assert response.status_code == 400
+        assert "already in this lobby" in response.json()["detail"]
