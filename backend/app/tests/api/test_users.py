@@ -1,9 +1,8 @@
 import uuid
 
 from fastapi.testclient import TestClient
-from unittest.mock import MagicMock
 
-from app.models import User, UserCreate
+from app.models import User
 from app.core.config import settings
 
 def test_create_user_success(api_client: TestClient, mock_user_crud):
@@ -48,7 +47,7 @@ def test_get_user_success(api_client: TestClient, mock_user_crud):
     user = User(name="testuser", id=user_id)
     mock_user_crud.get_user_by_id.return_value = user
 
-    response = api_client.get(f"{settings.API_STR}/users/{user_id}")
+    response = api_client.post(f"{settings.API_STR}/users/get", json={"id": str(user_id)})
     assert response.status_code == 200
     data = response.json()
     assert data["id"] == str(user_id)
@@ -60,7 +59,7 @@ def test_get_user_not_found(api_client: TestClient, mock_user_crud):
     invalid_id = uuid.uuid4()
     mock_user_crud.get_user_by_id.return_value = None
 
-    response = api_client.get(f"{settings.API_STR}/users/{invalid_id}")
+    response = api_client.post(f"{settings.API_STR}/users/get", json={"id": str(invalid_id)})
     assert response.status_code == 400
     assert response.json()["detail"] == "The user with this ID is not found"
     mock_user_crud.get_user_by_id.assert_called_once_with(id=invalid_id)

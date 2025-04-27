@@ -1,8 +1,6 @@
-import pytest
-import uuid
 
 from app.crud import UserCRUD, LobbyCRUD
-from app.models import UserCreate, LobbyCreate, Lobby
+from app.models import UserCreate, LobbyCreate
 from app.tests.utils.utils import random_lower_string
 
 
@@ -37,11 +35,11 @@ def test_get_lobby(
     lobby_name = random_lower_string()
     lobby_in = LobbyCreate(name=lobby_name, creator_id=user.id)
     created_lobby = lobby_crud.create_lobby(lobby_in)
-    
+     
     # Test getting lobby by id
-    retrieved_lobby = lobby_crud.get_lobby(created_lobby.pk)
+    retrieved_lobby = lobby_crud.get_lobby(created_lobby.id)
     assert retrieved_lobby
-    assert retrieved_lobby.pk == created_lobby.pk
+    assert retrieved_lobby.id == created_lobby.id
     assert retrieved_lobby.name == lobby_name
     assert retrieved_lobby.creator_id == user.id
 
@@ -88,5 +86,5 @@ def test_delete_lobby(
     assert success
     
     # Verify lobby was deleted
-    deleted_lobby = lobby_crud.get_lobby(lobby.pk)
+    deleted_lobby = lobby_crud.get_lobby(lobby.id)
     assert deleted_lobby is None

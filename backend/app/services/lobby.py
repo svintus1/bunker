@@ -1,9 +1,6 @@
-from uuid import UUID
+import uuid
 
-from redis import Redis
-from sqlmodel import Session
-
-from app.models import Lobby, LobbyCreate, User
+from app.models import Lobby, LobbyCreate, Player
 from app.services.deps import LobbyCRUDDep, PlayerCRUDDep, UserCRUDDep
 
 
@@ -30,9 +27,13 @@ class LobbyService:
         if not lobby:
             raise RuntimeError("Failed to create lobby")
 
-        # Add creator's player PK to lobby
-        lobby.player_ids.append(creator_player.pk)
+        # Add creator's player id to lobby
+        lobby.player_ids.append(creator_player.id)
         self.lobbies.update_lobby(lobby)
+        # Set lobby_id in player
+        creator_player.lobby_id = lobby.id
+        self.players.update_player(creator_player)
+
         return lobby
 
     def join_lobby(self, lobby_id: str, player_id: str) -> Lobby | None:
@@ -57,6 +58,21 @@ class LobbyService:
             return lobby
 
         return None
+
+    def find_player_by_user_id(self, lobby_id: str, user_id: uuid.UUID) -> Player | None:
+        """Find player in lobby at `lobby_id` by `user_id`.
+        
+        Return found Player or None if not found."""
+        lobby = self.lobbies.get_lobby(lobby_id)
+        for id in lobby.player_ids:
+            player = self.players.get_player(id)
+
+            if str(player.user.id) == str(user_id):
+                return player
+
+        return None
+
+
 
     def leave_lobby(self, lobby_id: str, player_id: str) -> Lobby | None:
         """Remove player from lobby. Return updated lobby or None if not updated."""

@@ -49,41 +49,41 @@ class PlayerCRUD:
             logger.error(f"Failed to create player for user {user.id}: {str(e)}")
             return None
 
-    def get_player(self, player_pk: str) -> Player | None:
+    def get_player(self, player_id: str) -> Player | None:
         """Get player by ID."""
         try:
-            player = Player.get(player_pk)
+            player = Player.get(player_id)
             if player:
-                logger.info(f"Retrieved player {player_pk}")
+                logger.info(f"Retrieved player {player_id}")
             else:
-                logger.warning(f"Player {player_pk} not found")
+                logger.warning(f"Player {player_id} not found")
             return player
         except Exception as e:
-            logger.error(f"Error retrieving player {player_pk}: {str(e)}")
+            logger.error(f"Error retrieving player {player_id}: {str(e)}")
             return None
 
     def update_player(self, player: Player) -> bool:
         """Update player in Redis."""
         try:
             player.save()
-            logger.info(f"Updated player {player.pk}")
+            logger.info(f"Updated player {player.id}")
             return True
         except Exception as e:
-            logger.error(f"Failed to update player {getattr(player, 'pk', None)}: {str(e)}")
+            logger.error(f"Failed to update player {getattr(player, 'id', None)}: {str(e)}")
             return False
 
-    def delete_player(self, player_pk: uuid.UUID) -> bool:
+    def delete_player(self, player_id: uuid.UUID) -> bool:
         """Delete player from Redis."""
         try:
-            player = Player.get(player_pk)
+            player = Player.get(player_id)
             if player:
                 player.delete()
-                logger.info(f"Deleted player {player_pk}")
+                logger.info(f"Deleted player {player_id}")
                 return True
-            logger.warning(f"Player {player_pk} not found for deletion")
+            logger.warning(f"Player {player_id} not found for deletion")
             return False
         except Exception as e:
-            logger.error(f"Error deleting player {player_pk}: {str(e)}")
+            logger.error(f"Error deleting player {player_id}: {str(e)}")
             return False
 
 
@@ -94,7 +94,7 @@ class LobbyCRUD:
             lobby_data = lobby_in.model_dump()
             lobby = Lobby(**lobby_data, player_ids=[])
             lobby.save()
-            logger.info(f"Created new lobby. lobby.pk: {lobby.pk}")
+            logger.info(f"Created new lobby. lobby.id: {lobby.id}")
             return lobby
         except Exception as e:
             logger.error(f"Failed to create lobby: {str(e)}")
@@ -104,31 +104,31 @@ class LobbyCRUD:
         """Update lobby in Redis."""
         try:
             lobby.save()
-            logger.info(f"Updated lobby {lobby.pk}")
+            logger.info(f"Updated lobby {lobby.id}")
             return True
         except Exception as e:
-            logger.error(f"Failed to update lobby {lobby.pk}: {str(e)}")
+            logger.error(f"Failed to update lobby {lobby.id}: {str(e)}")
             return False
 
-    def get_lobby(self, lobby_pk: str) -> Lobby | None:
+    def get_lobby(self, lobby_id: str) -> Lobby | None:
         """Get lobby by ID."""
         try:
-            lobby = Lobby.get(lobby_pk)
+            lobby = Lobby.get(lobby_id)
             if lobby:
-                logger.info(f"Retrieved lobby {lobby_pk}")
+                logger.info(f"Retrieved lobby {lobby_id}")
             else:
-                logger.warning(f"Lobby {lobby_pk} not found")
+                logger.warning(f"Lobby {lobby_id} not found")
             return lobby
         except Exception as e:
-            logger.error(f"Error retrieving lobby {lobby_pk}: {str(e)}")
+            logger.error(f"Error retrieving lobby {lobby_id}: {str(e)}")
             return None
 
     def delete_lobby(self, lobby: Lobby) -> bool:
         """Delete lobby and its player set from Redis."""
         try:
-            lobby.delete(lobby.pk)
-            logger.info(f"Deleted lobby {lobby.pk}")
+            lobby.delete(lobby.id)
+            logger.info(f"Deleted lobby {lobby.id}")
             return True
         except Exception as e:
-            logger.error(f"Failed to delete lobby {lobby.pk}: {str(e)}")
+            logger.error(f"Failed to delete lobby {lobby.id}: {str(e)}")
             return False

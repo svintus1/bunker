@@ -1,6 +1,5 @@
 from typing import Annotated
 from fastapi import Depends
-from redis import Redis
 from app.crud import LobbyCRUD, PlayerCRUD, UserCRUD
 from app.core.database import RedisConnectionDep, PgSessionDep
 
