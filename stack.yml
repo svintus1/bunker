@@ -34,8 +34,8 @@ services:
   redis:
     image: redis/redis-stack:latest
     restart: always
-    environment:
-      REDIS_ARGS: "--requirepass mypassword"
+    env_file:
+      - config/.env.redis
     networks:
       - my_network
 
@@ -45,4 +45,4 @@ networks:
 
 configs:
   nginx.conf:
-    external: true
+    file: ./frontend/nginx.conf
