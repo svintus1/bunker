@@ -16,7 +16,6 @@ services:
     env_file:
       - config/.env.backend
       - config/.env.pg
-      - config/.env.redis
     networks:
       - my_network
     depends_on:
