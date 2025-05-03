@@ -4,7 +4,7 @@ on:
   push:
     branches: [ 'feature/**' ]
   pull_request:
-    branches: [ 'feature/**' ]
+    branches: [ 'develop' ]
 
 jobs:
   lint:
@@ -12,7 +12,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: astral-sh/ruff-action@v3
+      - uses: actions/setup-python@v5
         with:
-            src: ./backend
-        continue-on-error: true
+          python-version: '3.12'
+
+      - run: |
+          python -m pip install --upgrade pip
+          pip install pylint
+
+      - run: npm install --save-dev htmlhint stylelint stylelint-config-standard 
+      - run: npm install --save-dev eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin
+
+      - run: npx htmlhint "./frontend/**/*.html"
+      - run: npx stylelint "./frontend/**/*.css"
+      - run: npx eslint "./frontend/**/*.ts"
+      - run: pylint ./backend/app/

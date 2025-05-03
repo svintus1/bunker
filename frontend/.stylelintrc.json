@@ -1,0 +1,9 @@
+{
+    "extends": "stylelint-config-standard",
+    "rules": {
+        "indentation": 2,
+        "max-empty-lines": 1,
+        "color-no-invalid-hex": true,
+        "block-no-empty": true
+    }
+}
