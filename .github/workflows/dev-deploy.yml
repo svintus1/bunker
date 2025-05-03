@@ -30,7 +30,7 @@ jobs:
           EOF
 
           cat <<EOF > ${{ github.workspace }}/config/.env.pg
-          POSTGRES_DB=${{ vars.POSTGRES_DB }}
+          POSTGRES_DB=${{ secrets.POSTGRES_DB }}
           POSTGRES_USER=${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
           EOF
