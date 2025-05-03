@@ -1,0 +1,59 @@
+name: Deployment in a development environment
+
+on:
+  push:
+    branches: [ develop ]
+    
+jobs:
+  build:
+    runs-on: [ self-hosted, development ]
+    environment: development
+    steps:
+      - name: Synchronizing a project with a repository
+        uses: actions/checkout@v4
+
+      - name: Recording secrets and configurations
+        run: |
+          mkdir ${{ github.workspace }}/config
+          
+          cat <<EOF > ${{ github.workspace }}/config/.env.backend
+          ENVIRONMENT=${{ vars.ENVIRONMENT }}
+          BACKEND_HOST=${{ vars.BACKEND_HOST }}
+          BACKEND_PORT=${{ vars.BACKEND_PORT }}
+          FRONTEND_HOST=${{ vars.FRONTEND_HOST }}
+          FRONTEND_PORT=${{ vars.FRONTEND_PORT }}
+          REDIS_HOST=${{ vars.REDIS_HOST }}
+          REDIS_PORT=${{ vars.REDIS_PORT }}
+          REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
+          POSTGRES_HOST=${{ vars.POSTGRES_HOST }}
+          POSTGRES_PORT=${{ vars.POSTGRES_PORT }}
+          EOF
+
+          cat <<EOF > ${{ github.workspace }}/config/.env.pg
+          POSTGRES_DB=${{ secrets.POSTGRES_DB }}
+          POSTGRES_USER=${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+          EOF
+
+          cat <<EOF > ${{ github.workspace }}/config/.env.redis
+          REDIS_ARGS=${{ secrets.REDIS_ARGS }}
+          EOF
+
+      - name: Image building
+        run: |
+          docker build -t dev.registry.local:5000/frontend:latest -f frontend/Dockerfile frontend/
+          docker build -t dev.registry.local:5000/backend:latest -f backend/Dockerfile backend/
+
+      - name: Push images to registry
+        run: |
+          docker push dev.registry.local:5000/frontend:latest
+          docker push dev.registry.local:5000/backend:latest
+
+  deploy:
+    needs: build
+    runs-on: [ self-hosted, development ]
+    steps:
+      - name: Deployment
+        run: |
+          ENV=dev \
+          docker stack deploy -d -c stack.yml dev

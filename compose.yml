@@ -29,7 +29,6 @@ services:
     env_file:
       - config/.env.backend
       - config/.env.pg
-      - config/.env.redis
     networks:
       - my_network
     ports:
@@ -53,10 +52,10 @@ services:
     image: redis/redis-stack:latest
     container_name: redis_db
     restart: always
-    environment:
-      REDIS_ARGS: "--requirepass mypassword"
     networks:
       - my_network
+    env_file:
+      - config/.env.redis
     ports:
       - 6379:6379
       - 8001:8001
