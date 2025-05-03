@@ -22,20 +22,21 @@ jobs:
           BACKEND_PORT=${{ vars.BACKEND_PORT }}
           FRONTEND_HOST=${{ vars.FRONTEND_HOST }}
           FRONTEND_PORT=${{ vars.FRONTEND_PORT }}
+          REDIS_HOST=${{ vars.REDIS_HOST }}
+          REDIS_PORT=${{ vars.REDIS_PORT }}
+          REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
+          POSTGRES_HOST=${{ vars.POSTGRES_HOST }}
+          POSTGRES_PORT=${{ vars.POSTGRES_PORT }}
           EOF
 
           cat <<EOF > ${{ github.workspace }}/config/.env.pg
-          POSTGRES_HOST=${{ vars.POSTGRES_HOST }}
-          POSTGRES_PORT=${{ vars.POSTGRES_PORT }}
           POSTGRES_DB=${{ vars.POSTGRES_DB }}
           POSTGRES_USER=${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
           EOF
 
           cat <<EOF > ${{ github.workspace }}/config/.env.redis
-          REDIS_HOST=${{ vars.REDIS_HOST }}
-          REDIS_PORT=${{ vars.REDIS_PORT }}
-          REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
+          REDIS_ARGS=${{ secrets.REDIS_ARGS }}
           EOF
 
       - name: Image building
@@ -47,16 +48,9 @@ jobs:
         run: |
           docker push dev.registry.local:5000/frontend:latest
           docker push dev.registry.local:5000/backend:latest
-  
-  test:
-    needs: build
-    runs-on: [ self-hosted, development ]
-    steps:
-      - name: Tests
-        run: sleep 5
-  
+
   deploy:
-    needs: test
+    needs: build
     runs-on: [ self-hosted, development ]
     steps:
       - name: Deployment
