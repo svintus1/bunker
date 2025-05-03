@@ -1,0 +1,47 @@
+services:
+  frontend:
+    image: ${ENV}.registry.local:5000/frontend:latest
+    restart: always
+    ports:
+      - 8080:80
+    configs:
+      - source: nginx.conf
+        target: /etc/nginx/nginx.conf
+    networks:
+      - my_network
+    
+  backend:
+    image: ${ENV}.registry.local:5000/backend:latest
+    restart: always
+    env_file:
+      - config/.env.backend
+      - config/.env.pg
+    networks:
+      - my_network
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:17
+    restart: always
+    env_file:
+      - config/.env.pg
+    networks:
+      - my_network
+
+  redis:
+    image: redis/redis-stack:latest
+    restart: always
+    env_file:
+      - config/.env.redis
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: overlay
+
+configs:
+  nginx.conf:
+    file: ./frontend/nginx.conf
