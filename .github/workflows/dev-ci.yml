@@ -52,11 +52,12 @@ jobs:
           redis/redis-stack:latest
 
           docker build -t backend:test -f ./backend/Dockerfile ./backend
-          docker run --rm pytest ./app/tests \
+          docker run --rm \
           --name test_backend \
           --network test_network \
           --env-file ./config/.env.backend \
-          backend:test
+          backend:test \
+          pytest ./app/tests
 
 
       # - uses: actions/setup-python@v5
