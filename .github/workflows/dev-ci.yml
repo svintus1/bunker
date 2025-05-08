@@ -16,6 +16,11 @@ jobs:
         with:
           src: "./backend/app"
 
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
       - uses: docker/setup-docker-action@v4
 
       - run: |
