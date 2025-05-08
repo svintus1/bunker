@@ -12,18 +12,65 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/ruff-action@v3
         with:
-          python-version: '3.12'
+          src: "./backend/app"
+
+      - uses: docker/setup-docker-action@v4
 
       - run: |
-          python -m pip install --upgrade pip
-          pip install pylint
+          mkdir ${{ github.workspace }}/config
+          
+          cat <<EOF > ${{ github.workspace }}/config/.env.backend
+          ENVIRONMENT=development
+          BACKEND_HOST=0.0.0.0
+          BACKEND_PORT=8000
+          FRONTEND_HOST=166.4.2.1
+          FRONTEND_PORT=3005
+          POSTGRES_HOST=test_db
+          POSTGRES_PORT=5432
+          REDIS_HOST=test_redis
+          REDIS_PORT=6379
+          REDIS_PASSWORD=mypassword
+          POSTGRES_USER=demid
+          POSTGRES_PASSWORD=test
+          POSTGRES_DB=test_db
+          EOF
 
-      - run: npm install --save-dev htmlhint stylelint stylelint-config-standard 
-      - run: npm install --save-dev eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin
+      - run: |
+          docker network create --driver bridge test_network
+          docker run -d --name test_db \
+          --network test_network \
+          -e POSTGRES_USER=demid \
+          -e POSTGRES_PASSWORD=test \
+          -e POSTGRES_DB=test_db \
+          postgres:17
+          
+          docker run -d --name test_redis \
+          --network test_network \
+          -e REDIS_ARGS="--requirepass mypassword" \
+          redis/redis-stack:latest
 
-      - run: npx htmlhint "./frontend/**/*.html"
-      - run: npx stylelint "./frontend/**/*.css"
-      - run: npx eslint "./frontend/**/*.ts"
-      - run: pylint ./backend/app/
+          docker build -t backend:test -f ./backend/Dockerfile ./backend
+          docker run --rm pytest ./app/tests \
+          --name test_backend \
+          --network test_network \
+          --env-file ./config/.env.backend \
+          backend:test
+
+
+      # - uses: actions/setup-python@v5
+      #   with:
+      #     python-version: '3.12'
+
+      # - run: |
+      #     python -m pip install --upgrade pip
+      #     pip install pylint
+
+      # - run: npm install --save-dev htmlhint stylelint stylelint-config-standard 
+      # - run: npm install --save-dev eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin
+
+      # - run: npx htmlhint "./frontend/**/*.html"
+      # - run: npx stylelint "./frontend/**/*.css"
+      # - run: npx eslint "./frontend/**/*.ts"
+      # - run: pylint ./backend/app/
