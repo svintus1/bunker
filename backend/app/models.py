@@ -1,7 +1,7 @@
 import uuid
 from typing import Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from sqlmodel import Field, SQLModel
 from redis_om import JsonModel
 from redis_om import get_redis_connection
@@ -58,8 +58,7 @@ class LobbyOutput(BaseModel):
     status: Literal["waiting", "playing", "finishing"] = "waiting"
     player_ids: list[str]
 
-    class Config:
-        extra = "ignore"
+    model_config = ConfigDict(extra="ignore")
 
 
 class Player(BaseJsonModel):
