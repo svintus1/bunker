@@ -1,7 +1,7 @@
 import uuid
-from typing import Literal
+from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, field_serializer
 from sqlmodel import Field, SQLModel
 from redis_om import JsonModel
 from redis_om import get_redis_connection
@@ -70,3 +70,35 @@ class Player(BaseJsonModel):
     user: User
     lobby_id: str | None = None
 
+
+class Event(BaseModel):
+    """Model used as WebSocket API output message.
+    
+    Contains `event` and `data`."""
+
+    event: str
+    data: Any
+
+    @field_serializer("data", mode="wrap", when_used="json")
+    def _serialize_data(self, data, handler, info):
+        """
+        Recursively serialize:
+          - BaseModel → use its .model_dump(mode="json")
+          - dict      → recurse into values
+          - list/tuple→ recurse into items
+          - else      → leave as‑is
+        """
+        def recurse(v: Any) -> Any:
+            if isinstance(v, BaseModel):
+                # dump nested Pydantic models to JSON‑safe dict
+                return v.model_dump(mode="json")
+            if isinstance(v, dict):
+                return {k: recurse(v2) for k, v2 in v.items()}
+            if isinstance(v, (list, tuple)):
+                return [recurse(i) for i in v]
+            return v
+
+        # first apply Pydantic’s normal dump to `data`
+        dumped = handler(data, info)
+        # then wrap/transform recursively
+        return recurse(dumped)
