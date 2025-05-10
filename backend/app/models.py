@@ -1,5 +1,6 @@
 import uuid
 from typing import Any, Literal
+from enum import StrEnum, auto
 
 from pydantic import BaseModel, ConfigDict, field_serializer
 from sqlmodel import Field, SQLModel
@@ -71,12 +72,16 @@ class Player(BaseJsonModel):
     lobby_id: str | None = None
 
 
+class EventType(StrEnum):
+    JOIN = auto()
+    LEAVE = auto()
+
 class Event(BaseModel):
     """Model used as WebSocket API output message.
     
     Contains `event` and `data`."""
 
-    event: str
+    event: EventType
     data: Any
 
     @field_serializer("data", mode="wrap", when_used="json")
