@@ -15,12 +15,12 @@ class LobbyService:
         # Get the creator user from DB
         creator_user = self.users.get_user_by_id(lobby_in.creator_id)
         if not creator_user:
-            raise RuntimeError(f"User with id {lobby_in.creator_id} does not exist")
+            raise RuntimeError(f"User with id={lobby_in.creator_id} does not exist")
 
         # Create player for the creator
         creator_player = self.players.create_player(user=creator_user)
         if not creator_player:
-            raise RuntimeError(f"Failed to create player for creator {lobby_in.creator_id}")
+            raise RuntimeError(f"Failed to create player for creator id={lobby_in.creator_id}")
 
         # Create the lobby with empty player_ids
         lobby = self.lobbies.create_lobby(lobby_in)
@@ -64,6 +64,8 @@ class LobbyService:
         
         Return found Player or None if not found."""
         lobby = self.lobbies.get_lobby(lobby_id)
+        if not lobby:
+            raise RuntimeError(f"Lobby with id={lobby_id} not found")
         for id in lobby.player_ids:
             player = self.players.get_player(id)
 
