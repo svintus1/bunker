@@ -24,7 +24,7 @@ async def lobby_websocket(
     manager: ConnectionManagerDep
 ):
     logger.info("WebSocket connection attempt: lobby_id=%s, user_id=%s", lobby_id, user_id)
-    await manager.connect(websocket)
+    await manager.connect(lobby_id, websocket)
 
     try:
         player = lobby_service.find_player_by_user_id(lobby_id, user_id)
@@ -40,17 +40,17 @@ async def lobby_websocket(
     logger.info("User connected: %s", user.model_dump())
     join_event = Event(event="join", data={"user": user}).model_dump()
     logger.info("Join event created: %s", join_event)
-    await manager.broadcast_json(join_event, exclude=websocket)
+    await manager.broadcast_json(join_event, lobby_id, exclude=websocket)
 
     try:
         while True:
             data = await websocket.receive_text()
             logger.debug("Received message from %s: %s", user_id, data)
             await manager.unicast_text(f"You sent message: {data}", websocket)
-            await manager.broadcast_text(f"User {user_id} sent message: {data}", exclude=websocket)
+            await manager.broadcast_text(f"User {user_id} sent message: {data}", lobby_id, exclude=websocket)
     except WebSocketDisconnect:
         logger.info("WebSocket disconnected: user_id=%s", user_id)
         manager.disconnect(websocket)
         leave_event = Event(event="leave", data={"user": user}).model_dump()
-        await manager.broadcast_json(leave_event)
+        await manager.broadcast_json(leave_event, lobby_id)
 
