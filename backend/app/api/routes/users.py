@@ -3,8 +3,8 @@ import uuid
 
 from fastapi import APIRouter, Body, HTTPException
 
-from app.models import UserCreate, User
-from app.api.deps import UserCRUDDep
+from models import UserCreate, User
+from api.deps import UserCRUDDep
 
 router = APIRouter(prefix="/users", tags=["users"])
 

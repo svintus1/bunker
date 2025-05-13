@@ -1,8 +1,8 @@
 import uuid
 import pytest
 
-from app.models import Lobby, LobbyCreate, Player, User
-from app.services.lobby import LobbyService
+from models import Lobby, LobbyCreate, Player, User
+from services.lobby import LobbyService
 
 @pytest.fixture
 def lobby_service(mock_lobby_crud, mock_player_crud, mock_user_crud):

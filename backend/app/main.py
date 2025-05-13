@@ -3,8 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
 
-from app.core.config import settings
-from app.api.main import api_router
+from core.config import settings
+from api.main import api_router
 
 
 app = FastAPI(
