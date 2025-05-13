@@ -1,7 +1,7 @@
 import uuid
 
-from app.models import Lobby, LobbyCreate, Player
-from app.services.deps import LobbyCRUDDep, PlayerCRUDDep, UserCRUDDep
+from models import Lobby, LobbyCreate, Player
+from services.deps import LobbyCRUDDep, PlayerCRUDDep, UserCRUDDep
 
 
 class LobbyService:

@@ -1,9 +1,9 @@
 import uuid
 
 
-from app.models import UserCreate
-from app.crud import UserCRUD
-from app.tests.utils.utils import random_lower_string
+from models import UserCreate
+from crud import UserCRUD
+from tests.utils.utils import random_lower_string
 
 
 def test_create_user(user_crud: UserCRUD) -> None:

@@ -1,5 +1,10 @@
-from app.models import User, Player
-from app.services.deps import PlayerCRUDDep, UserCRUDDep
+import logging
+
+from models import User, Player
+from services.deps import PlayerCRUDDep, UserCRUDDep
+from core.config import settings
+
+logger = logging.getLogger(settings.LOGGER_NAME)
 
 class PlayerService:
     def __init__(self, players: PlayerCRUDDep, users: UserCRUDDep):

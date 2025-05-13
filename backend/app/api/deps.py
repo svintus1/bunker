@@ -1,10 +1,10 @@
 from collections import defaultdict
 from typing import Annotated
 from fastapi import Depends, WebSocket
-from app.crud import UserCRUD, LobbyCRUD, PlayerCRUD
-from app.core.database import PgSessionDep
-from app.services.lobby import LobbyService
-from app.services.player import PlayerService
+from crud import UserCRUD, LobbyCRUD, PlayerCRUD
+from core.database import PgSessionDep
+from services.lobby import LobbyService
+from services.player import PlayerService
 
 
 def get_user_crud(session: PgSessionDep) -> UserCRUD:

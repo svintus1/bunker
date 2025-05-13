@@ -4,9 +4,8 @@ import logging
 from typing import Annotated
 from fastapi import APIRouter, Query, WebSocket, WebSocketDisconnect, WebSocketException
 
-from app.api.deps import ConnectionManagerDep, LobbyServiceDep
-from app.models import Event, EventType
-
+from api.deps import ConnectionManagerDep, LobbyServiceDep
+from models import Event, EventType
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -44,6 +43,7 @@ async def lobby_websocket(
 
     try:
         while True:
+            # Temporary message exchange
             data = await websocket.receive_text()
             logger.debug("Received message from %s: %s", user_id, data)
             await manager.unicast_text(f"You sent message: {data}", websocket)

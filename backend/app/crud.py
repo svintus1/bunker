@@ -3,8 +3,9 @@ import logging
 
 import redis_om
 from sqlmodel import Session, select
-from app.models import User, UserCreate, Lobby, LobbyCreate, Player
-from app.core.config import settings
+
+from models import User, UserCreate, Lobby, LobbyCreate, Player
+from core.config import settings
 
 logger = logging.getLogger(settings.LOGGER_NAME)
 

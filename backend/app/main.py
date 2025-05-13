@@ -5,9 +5,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
-
-from app.core.config import settings, setup_logging
-from app.api.main import api_router
+from core.config import settings, setup_logging
+from api.main import api_router
 
 logger = logging.getLogger(settings.LOGGER_NAME)
 

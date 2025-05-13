@@ -1,7 +1,7 @@
 from typing import Annotated
 from fastapi import Depends
-from app.crud import LobbyCRUD, PlayerCRUD, UserCRUD
-from app.core.database import PgSessionDep
+from crud import LobbyCRUD, PlayerCRUD, UserCRUD
+from core.database import PgSessionDep
 
 def get_lobby_crud() -> LobbyCRUD:
     return LobbyCRUD()

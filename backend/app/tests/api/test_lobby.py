@@ -3,8 +3,8 @@ from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 
-from app.models import Lobby, User, Player
-from app.core.config import settings
+from models import Lobby, User, Player
+from core.config import settings
 
 
 def test_create_lobby_success(api_client: TestClient, mock_lobby_crud, mock_user_crud, mock_player_crud):

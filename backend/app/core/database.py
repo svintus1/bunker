@@ -5,7 +5,7 @@ from sqlmodel import Session, create_engine
 from redis import Redis
 from redis_om import get_redis_connection
 
-from app.core.config import settings
+from core.config import settings
 
 
 engine = create_engine(str(settings.POSTGRES_DATABASE_URI))

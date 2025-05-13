@@ -2,8 +2,8 @@ import uuid
 from typing import Annotated, Any
 from fastapi import APIRouter, Body, HTTPException
 
-from app.api.deps import LobbyServiceDep, PlayerCRUDDep, UserCRUDDep
-from app.models import LobbyCreate, LobbyOutput
+from api.deps import LobbyServiceDep, PlayerCRUDDep, UserCRUDDep
+from models import LobbyCreate, LobbyOutput
 
 router = APIRouter(prefix="/lobby", tags=["lobby"])
 
