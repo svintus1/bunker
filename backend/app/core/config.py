@@ -1,5 +1,13 @@
+import os
+import pathlib
+import json
+import logging
+import atexit
+import logging.config
+import logging.handlers
+
 from pydantic_settings import BaseSettings
-from typing import Literal
+from typing import Any, Literal
 from pydantic import (
     computed_field,
     PostgresDsn,
@@ -81,8 +89,25 @@ class Settings(BaseSettings):
             path="1" # Use DB 1 for test (0 is prod)
         )
 
+    LOGGER_NAME: str = "bunker"
+
+    @computed_field
+    @property
+    def LOGGING_CONFIG(self) -> dict[str, Any]:
+        # Create logs directory if not exists
+        os.makedirs("/opt/logs", exist_ok=True)
+        config_file = pathlib.Path("/opt/app/config/logging_config.json")
+        with open(config_file) as f:
+            config = json.load(f)
+            return config
+
 
 settings = Settings()
 
-if __name__ == "__main__":
-    print(str(settings.REDIS_TEST_DATABASE_URI))
+
+def setup_logging():
+    logging.config.dictConfig(settings.LOGGING_CONFIG)
+    queue_handler: logging.handlers.QueueHandler = logging.getHandlerByName("queue_handler")
+    if queue_handler is not None:
+        queue_handler.listener.start()
+        atexit.register(queue_handler.listener.stop)
