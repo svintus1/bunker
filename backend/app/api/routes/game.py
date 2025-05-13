@@ -5,7 +5,7 @@ from typing import Annotated
 from fastapi import APIRouter, Query, WebSocket, WebSocketDisconnect, WebSocketException
 
 from app.api.deps import ConnectionManagerDep, LobbyServiceDep
-from app.models import Event
+from app.models import Event, EventType
 
 
 logger = logging.getLogger(__name__)
@@ -38,7 +38,7 @@ async def lobby_websocket(
 
     user = player.user
     logger.info("User connected: %s", user.model_dump())
-    join_event = Event(event="join", data={"user": user}).model_dump()
+    join_event = Event(event=EventType.JOIN, data={"user": user}).model_dump()
     logger.info("Join event created: %s", join_event)
     await manager.broadcast_json(join_event, lobby_id, exclude=websocket)
 
@@ -51,6 +51,6 @@ async def lobby_websocket(
     except WebSocketDisconnect:
         logger.info("WebSocket disconnected: user_id=%s", user_id)
         manager.disconnect(websocket)
-        leave_event = Event(event="leave", data={"user": user}).model_dump()
+        leave_event = Event(event=EventType.LEAVE, data={"user": user}).model_dump()
         await manager.broadcast_json(leave_event, lobby_id)
 
