@@ -1,12 +1,13 @@
 import uuid
 import logging
 
+import redis_om
 from sqlmodel import Session, select
 
 from models import User, UserCreate, Lobby, LobbyCreate, Player
+from core.config import settings
 
-# Configure logging
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(settings.LOGGER_NAME)
 
 class UserCRUD:
     def __init__(self, session: Session):
@@ -18,23 +19,27 @@ class UserCRUD:
         self.session.add(user)
         self.session.commit()
         self.session.refresh(user)
+        logger.debug("Create user with name=%s: id=%s", user.name, str(user.id))
         return user
 
     def get_user_by_id(self, id: uuid.UUID) -> User | None:
         """Get user by ID."""
         statement = select(User).where(User.id == id)
         user_by_id = self.session.exec(statement).first()
+        logger.debug("Get user by id=%s: name=%s", str(id), user_by_id.name if user_by_id else "<Not found>")
         return user_by_id
 
     def get_user_by_name(self, name: str) -> User | None:
         """Get user by name."""
         statement = select(User).where(User.name == name)
         user_by_name = self.session.exec(statement).first()
+        logger.debug("Get user by name=%s: id=%s", name, str(user_by_name.id) if user_by_name else "<Not found>")
         return user_by_name
 
     def delete_user(self, user: User) -> None:
         """Delete user from DB."""
         self.session.delete(user)
+        logger.debug("Delete user: id=%s", str(user.id))
         self.session.commit()
 
 
@@ -44,47 +49,40 @@ class PlayerCRUD:
         try:
             player = Player(user=user)
             player.save()
-            logger.info(f"Created new player for user {user.id}")
+            logger.debug("Create player for user id=%s: player_id=%s", str(user.id), player.id)
             return player
         except Exception as e:
-            logger.error(f"Failed to create player for user {user.id}: {str(e)}")
+            logger.warning("Failed to create player for user id=%s: %s", str(user.id), str(e))
             return None
 
     def get_player(self, player_id: str) -> Player | None:
         """Get player by ID."""
         try:
             player = Player.get(player_id)
-            if player:
-                logger.info(f"Retrieved player {player_id}")
-            else:
-                logger.warning(f"Player {player_id} not found")
+            logger.debug("Get player by player_id=%s", player_id)
             return player
-        except Exception as e:
-            logger.error(f"Error retrieving player {player_id}: {str(e)}")
+        except redis_om.NotFoundError as e:
+            logger.warning("Failed to get player by player_id=%s: %s", player_id, str(e))
             return None
 
     def update_player(self, player: Player) -> bool:
         """Update player in Redis."""
         try:
             player.save()
-            logger.info(f"Updated player {player.id}")
+            logger.debug("Update player with id=%s", player.id)
             return True
         except Exception as e:
-            logger.error(f"Failed to update player {getattr(player, 'id', None)}: {str(e)}")
+            logger.warning("Failed to update player with id=%s: %s", player.id, str(e))
             return False
 
-    def delete_player(self, player_id: uuid.UUID) -> bool:
+    def delete_player(self, player: Player) -> bool:
         """Delete player from Redis."""
         try:
-            player = Player.get(player_id)
-            if player:
-                player.delete()
-                logger.info(f"Deleted player {player_id}")
-                return True
-            logger.warning(f"Player {player_id} not found for deletion")
-            return False
+            player.delete()
+            logger.debug("Delete player with id=%s", player.id)
+            return True
         except Exception as e:
-            logger.error(f"Error deleting player {player_id}: {str(e)}")
+            logger.warning("Failed to delete player with id=%s: %s", player.id, str(e))
             return False
 
 
@@ -95,41 +93,38 @@ class LobbyCRUD:
             lobby_data = lobby_in.model_dump()
             lobby = Lobby(**lobby_data, player_ids=[])
             lobby.save()
-            logger.info(f"Created new lobby. lobby.id: {lobby.id}")
+            logger.debug("Create lobby with id=%s", lobby.id)
             return lobby
         except Exception as e:
-            logger.error(f"Failed to create lobby: {str(e)}")
+            logger.warning("Failed to create lobby with name=%s: %s", lobby_in.name, str(e))
             return None
 
     def update_lobby(self, lobby: Lobby) -> bool:
         """Update lobby in Redis."""
         try:
             lobby.save()
-            logger.info(f"Updated lobby {lobby.id}")
+            logger.debug("Update lobby with id=%s", lobby.id)
             return True
         except Exception as e:
-            logger.error(f"Failed to update lobby {lobby.id}: {str(e)}")
+            logger.warning("Failed to update lobby with id=%s: %s", lobby.id, str(e))
             return False
 
     def get_lobby(self, lobby_id: str) -> Lobby | None:
         """Get lobby by ID."""
         try:
             lobby = Lobby.get(lobby_id)
-            if lobby:
-                logger.info(f"Retrieved lobby {lobby_id}")
-            else:
-                logger.warning(f"Lobby {lobby_id} not found")
+            logger.debug("Get lobby by id=%s: name=%s", lobby_id, lobby.name)
             return lobby
-        except Exception as e:
-            logger.error(f"Error retrieving lobby {lobby_id}: {str(e)}")
+        except redis_om.NotFoundError as e:
+            logger.warning("Failed to get lobby by lobby_id=%s: %s", lobby_id, str(e))
             return None
 
     def delete_lobby(self, lobby: Lobby) -> bool:
         """Delete lobby and its player set from Redis."""
         try:
             lobby.delete(lobby.id)
-            logger.info(f"Deleted lobby {lobby.id}")
+            logger.debug("Delete lobby with id=%s", lobby.id)
             return True
         except Exception as e:
-            logger.error(f"Failed to delete lobby {lobby.id}: {str(e)}")
+            logger.warning("Failed to delete lobby with id=%s: %s", lobby.id, str(e))
             return False
