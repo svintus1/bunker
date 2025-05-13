@@ -7,7 +7,7 @@ from sqlmodel import Field, SQLModel
 from redis_om import JsonModel
 from redis_om import get_redis_connection
 
-from app.core.config import settings
+from core.config import settings
 
 
 class UserCreate(SQLModel):

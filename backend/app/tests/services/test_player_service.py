@@ -1,7 +1,7 @@
 import pytest
 
-from app.models import User, Player
-from app.services.player import PlayerService
+from models import User, Player
+from services.player import PlayerService
 
 @pytest.fixture
 def player_service(mock_player_crud, mock_user_crud):

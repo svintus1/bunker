@@ -2,7 +2,8 @@ import uuid
 import logging
 
 from sqlmodel import Session, select
-from app.models import User, UserCreate, Lobby, LobbyCreate, Player
+
+from models import User, UserCreate, Lobby, LobbyCreate, Player
 
 # Configure logging
 logger = logging.getLogger(__name__)

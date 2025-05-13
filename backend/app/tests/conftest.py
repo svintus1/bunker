@@ -9,11 +9,11 @@ from sqlmodel import Session, SQLModel, create_engine
 from sqlalchemy import Engine
 from sqlalchemy_utils import database_exists, create_database, drop_database
 
-from app.main import app
-from app.core.config import settings
-from app.api.deps import get_user_crud, get_lobby_crud, get_player_crud
-from app.crud import UserCRUD, LobbyCRUD
-from app.models import BaseJsonModel
+from main import app
+from core.config import settings
+from api.deps import get_user_crud, get_lobby_crud, get_player_crud
+from crud import UserCRUD, LobbyCRUD
+from models import BaseJsonModel
 
 
 @pytest.fixture(autouse=True)
