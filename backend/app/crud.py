@@ -120,7 +120,7 @@ class LobbyCRUD:
             return None
 
     def delete_lobby(self, lobby: Lobby) -> bool:
-        """Delete lobby and its player set from Redis."""
+        """Delete lobby from Redis."""
         try:
             lobby.delete(lobby.id)
             logger.debug("Delete lobby with id=%s", lobby.id)
