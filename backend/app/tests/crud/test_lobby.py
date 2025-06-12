@@ -1,7 +1,7 @@
 
 from crud import UserCRUD, LobbyCRUD
 from models import UserCreate, LobbyCreate
-from tests.utils.utils import random_lower_string
+from tests.test_utils.utils import random_lower_string
 
 
 def test_create_lobby(
