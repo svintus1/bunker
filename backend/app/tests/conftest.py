@@ -2,18 +2,20 @@ from collections.abc import Generator
 from typing import Any
 import pytest
 import logging
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, AsyncMock
 
 from fastapi.testclient import TestClient
 from sqlmodel import Session, SQLModel, create_engine
 from sqlalchemy import Engine
 from sqlalchemy_utils import database_exists, create_database, drop_database
+from fastapi import WebSocket
 
 from main import app
 from core.config import settings
 from api.deps import get_user_crud, get_lobby_crud, get_player_crud
 from crud import UserCRUD, LobbyCRUD
 from models import BaseJsonModel
+from app.utils.connection_manager import ConnectionManager
 
 
 @pytest.fixture(autouse=True)
@@ -146,3 +148,17 @@ def api_client(mock_user_crud, mock_lobby_crud, mock_player_crud) -> Generator[T
         yield client
 
     app.dependency_overrides.clear()
+
+
+@pytest.fixture(scope="module")
+def manager():
+    return ConnectionManager()
+
+@pytest.fixture
+def lobby_id():
+    return "test_lobby"
+
+@pytest.fixture
+def websocket():
+    ws = AsyncMock(spec=WebSocket)
+    return ws
