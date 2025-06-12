@@ -37,8 +37,8 @@ class LobbyService:
 
         return lobby
 
-    def join_lobby(self, lobby_id: str, player_id: str) -> Lobby | None:
-        """Add player to lobby if possible. Return updated lobby or None if not updated."""
+    def join_lobby(self, lobby_id: str, player_id: str) -> Lobby:
+        """Add player to lobby if possible. Return updated lobby."""
         lobby = self.lobbies.get_lobby(lobby_id)
         player = self.players.get_player(player_id)
         
