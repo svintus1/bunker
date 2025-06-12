@@ -3,7 +3,7 @@ import pytest
 
 from models import Lobby, LobbyCreate, Player, User
 from services.lobby import LobbyService
-from exceptions import NotFoundError, CreationError, LobbyStatusError, AlreadyInLobbyError
+from exceptions import NotFoundError, LobbyStatusError, AlreadyInLobbyError
 
 @pytest.fixture
 def lobby_service(mock_lobby_crud, mock_player_crud, mock_user_crud):
