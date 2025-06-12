@@ -4,6 +4,7 @@ from fastapi import APIRouter, Body, HTTPException
 
 from api.deps import LobbyServiceDep, PlayerCRUDDep, UserCRUDDep
 from models import LobbyCreate, LobbyOutput
+from exceptions import AlreadyInLobbyError, CreationError, LobbyStatusError, NotFoundError
 
 router = APIRouter(prefix="/lobby", tags=["lobby"])
 
@@ -14,7 +15,15 @@ def create_lobby(
     lobby_service: LobbyServiceDep
 ) -> LobbyOutput:
     lobby_in = LobbyCreate(name=name, creator_id=creator_id)
-    lobby = lobby_service.create_lobby(lobby_in)
+    try:
+        lobby = lobby_service.create_lobby(lobby_in)
+    except CreationError as e:
+        raise HTTPException(status_code=500,
+                            detail=str(e))
+    except NotFoundError as e:
+        raise HTTPException(status_code=404,
+                            detail=str(e))
+
     lobby_out = LobbyOutput(**lobby.model_dump(), id=lobby.id)
     return lobby_out
 
@@ -35,21 +44,28 @@ def join_lobby(
 
     try:
         player = lobby_service.find_player_by_user_id(lobby_id, user_id)
-    except RuntimeError as e:
+    except NotFoundError as e:
         raise HTTPException(status_code=400,
                             detail=str(e))
     if player:
         raise HTTPException(status_code=400,
                             detail="The user is already in this lobby")
 
-    player = player_crud.create_player(user)
-    if not player:
+    try:
+        player = player_crud.create_player(user)
+    except CreationError as e:
         raise HTTPException(status_code=500,
-                            detail="Failed to create player from user")
-    lobby = lobby_service.join_lobby(lobby_id, player.id)
-    if not lobby:
-        raise HTTPException(status_code=500,
-                            detail="Failed to join lobby")
+                            detail=str(e))
+
+    try:
+        lobby = lobby_service.join_lobby(lobby_id, player.id)
+    except NotFoundError as e:
+        raise HTTPException(status_code=404,
+                            detail=str(e))
+    except (LobbyStatusError, AlreadyInLobbyError) as e:
+        raise HTTPException(status_code=400,
+                            detail=str(e))
+
     lobby_out = LobbyOutput(**lobby.model_dump(), id=lobby.id)
     return {"lobby": lobby_out, "player_id": player.id}
 

@@ -2,6 +2,7 @@ import pytest
 
 from models import User, Player
 from services.player import PlayerService
+from exceptions import CreationError
 
 @pytest.fixture
 def player_service(mock_player_crud, mock_user_crud):
@@ -20,5 +21,5 @@ def test_create_player_failure(player_service, mock_player_crud):
     user = User(name="test", id="user-uuid")
     mock_player_crud.create_player.return_value = None
 
-    with pytest.raises(RuntimeError):
+    with pytest.raises(CreationError):
         player_service.create_player(user)

@@ -24,6 +24,7 @@ class UserCRUD:
             logger.debug("Create user with name=%s: id=%s", user.name, str(user.id))
             return user
         except ValidationError as e:
+            logger.warning("Failed to create user with name=%s: %s", user_create.name, e)
             return None
 
     def get_user_by_id(self, id: uuid.UUID) -> User | None:

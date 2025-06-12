@@ -3,6 +3,7 @@ import pytest
 
 from models import Lobby, LobbyCreate, Player, User
 from services.lobby import LobbyService
+from exceptions import NotFoundError, LobbyStatusError, AlreadyInLobbyError
 
 @pytest.fixture
 def lobby_service(mock_lobby_crud, mock_player_crud, mock_user_crud):
@@ -42,8 +43,8 @@ def test_join_lobby_already_in(lobby_service, mock_lobby_crud, mock_player_crud)
     mock_lobby_crud.get_lobby.return_value = lobby
     mock_player_crud.get_player.return_value = player
 
-    result = lobby_service.join_lobby(lobby_id, player_id)
-    assert result is None
+    with pytest.raises(AlreadyInLobbyError):
+        lobby_service.join_lobby(lobby_id, player_id)
 
 def test_join_lobby_not_waiting(lobby_service, mock_lobby_crud, mock_player_crud):
     lobby_id = "lobby-pk"
@@ -54,8 +55,8 @@ def test_join_lobby_not_waiting(lobby_service, mock_lobby_crud, mock_player_crud
     mock_lobby_crud.get_lobby.return_value = lobby
     mock_player_crud.get_player.return_value = player
 
-    updated_lobby= lobby_service.join_lobby(lobby_id, player_id)
-    assert updated_lobby is None
+    with pytest.raises(LobbyStatusError):
+        lobby_service.join_lobby(lobby_id, player_id)
 
 def test_leave_lobby_success(lobby_service, mock_lobby_crud, mock_player_crud):
     lobby_id = "lobby-pk"
@@ -74,8 +75,8 @@ def test_leave_lobby_success(lobby_service, mock_lobby_crud, mock_player_crud):
 def test_leave_lobby_not_found(lobby_service, mock_lobby_crud, mock_player_crud):
     mock_lobby_crud.get_lobby.return_value = None
     mock_player_crud.get_player.return_value = None
-    updated_lobby = lobby_service.leave_lobby("lobby", "player")
-    assert updated_lobby is None
+    with pytest.raises(NotFoundError):
+        lobby_service.leave_lobby("lobby", "player")
 
 def test_delete_lobby_success(lobby_service, mock_lobby_crud, mock_player_crud):
     lobby_id = "lobby-pk"
