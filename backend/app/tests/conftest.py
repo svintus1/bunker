@@ -15,7 +15,7 @@ from core.config import settings
 from api.deps import get_user_crud, get_lobby_crud, get_player_crud
 from crud import UserCRUD, LobbyCRUD
 from models import BaseJsonModel
-from app.utils.connection_manager import ConnectionManager
+from api.utils.connection_manager import ConnectionManager
 
 
 @pytest.fixture(autouse=True)

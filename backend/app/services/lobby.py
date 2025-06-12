@@ -96,6 +96,7 @@ class LobbyService:
             # Remove from lobby's player list
             lobby.player_ids.remove(player_id)
             self.lobbies.update_lobby(lobby)
+            return lobby
 
         return None
 
