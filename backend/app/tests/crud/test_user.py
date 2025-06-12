@@ -3,7 +3,7 @@ import uuid
 
 from models import UserCreate
 from crud import UserCRUD
-from tests.utils.utils import random_lower_string
+from tests.test_utils.utils import random_lower_string
 
 
 def test_create_user(user_crud: UserCRUD) -> None:

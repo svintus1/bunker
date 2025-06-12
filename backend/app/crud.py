@@ -1,6 +1,7 @@
 import uuid
 import logging
 
+from pydantic import ValidationError
 import redis_om
 from sqlmodel import Session, select
 
@@ -15,12 +16,15 @@ class UserCRUD:
 
     def create_user(self, user_create: UserCreate) -> User | None:
         """Create new user and save to Postgres DB."""
-        user = User.model_validate(user_create)
-        self.session.add(user)
-        self.session.commit()
-        self.session.refresh(user)
-        logger.debug("Create user with name=%s: id=%s", user.name, str(user.id))
-        return user
+        try:
+            user = User.model_validate(user_create)
+            self.session.add(user)
+            self.session.commit()
+            self.session.refresh(user)
+            logger.debug("Create user with name=%s: id=%s", user.name, str(user.id))
+            return user
+        except ValidationError as e:
+            return None
 
     def get_user_by_id(self, id: uuid.UUID) -> User | None:
         """Get user by ID."""
@@ -120,7 +124,7 @@ class LobbyCRUD:
             return None
 
     def delete_lobby(self, lobby: Lobby) -> bool:
-        """Delete lobby and its player set from Redis."""
+        """Delete lobby from Redis."""
         try:
             lobby.delete(lobby.id)
             logger.debug("Delete lobby with id=%s", lobby.id)

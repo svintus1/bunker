@@ -74,8 +74,6 @@ class LobbyService:
 
         return None
 
-
-
     def leave_lobby(self, lobby_id: str, player_id: str) -> Lobby | None:
         """Remove player from lobby. Return updated lobby or None if not updated."""
         lobby = self.lobbies.get_lobby(lobby_id)
@@ -95,3 +93,17 @@ class LobbyService:
             return lobby
 
         return None
+
+    def delete_lobby(self, lobby_id: str) -> bool:
+        """Delete lobby and its players"""
+        lobby = self.lobbies.get_lobby(lobby_id)
+
+        if not lobby:
+            return False
+        
+        for player_id in lobby.player_ids:
+            player = self.players.get_player(player_id)
+            if player:
+                self.players.delete_player(player)
+
+        return self.lobbies.delete_lobby(lobby)
