@@ -3,6 +3,7 @@ import logging
 from models import User, Player
 from services.deps import PlayerCRUDDep, UserCRUDDep
 from core.config import settings
+from exceptions import CreationError
 
 logger = logging.getLogger(settings.LOGGER_NAME)
 
@@ -15,5 +16,5 @@ class PlayerService:
         """Create player from user."""
         player = self.players.create_player(user)
         if not player:
-            raise RuntimeError(f"Failed to create player for user {user.id}")
+            raise CreationError(f"Failed to create player for user {user.id}")
         return player
