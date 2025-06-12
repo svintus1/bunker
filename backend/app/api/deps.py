@@ -1,10 +1,10 @@
-from collections import defaultdict
 from typing import Annotated
-from fastapi import Depends, WebSocket
+from fastapi import Depends
 from crud import UserCRUD, LobbyCRUD, PlayerCRUD
 from core.database import PgSessionDep
 from services.lobby import LobbyService
 from services.player import PlayerService
+from utils.connection_manager import ConnectionManager
 
 
 def get_user_crud(session: PgSessionDep) -> UserCRUD:
@@ -39,48 +39,8 @@ LobbyServiceDep = Annotated[LobbyService, Depends(get_lobby_service)]
 PlayerServiceDep = Annotated[PlayerService, Depends(get_player_service)]
 
 
-class ConnectionManager:
-    def __init__(self):
-        self.active_connections: dict[str, set[WebSocket]] = defaultdict(set)
-
-    async def connect(self, lobby_id: str, websocket: WebSocket):
-        await websocket.accept()
-        self.active_connections[lobby_id].add(websocket)
-
-    def disconnect(self, lobby_id: str, websocket: WebSocket):
-        self.active_connections[lobby_id].remove(websocket)
-
-    async def unicast_json(self, data: dict, websocket: WebSocket):
-        await websocket.send_json(data)
-
-    async def unicast_text(self, data: str, websocket: WebSocket):
-        await websocket.send_text(data)
-
-    def __parse_exclude__(self, exclude: WebSocket | set[WebSocket] | None = None) -> set[WebSocket]:
-        match exclude:
-            case None:
-                exclude_set = set()
-            case WebSocket():
-                exclude_set = {exclude}
-            case set():
-                exclude_set = exclude
-            case _:
-                raise TypeError("exclude must be a WebSocket, a set of WebSockets, or None")
-        return exclude_set
-
-    async def broadcast_json(self, data: dict, lobby_id: str, exclude: WebSocket | set[WebSocket] | None = None):
-        destinations = self.active_connections[lobby_id].copy().difference(self.__parse_exclude__(exclude))
-        for connection in destinations:
-            await connection.send_json(data)
-
-    async def broadcast_text(self, data: str, lobby_id: str, exclude: WebSocket | set[WebSocket] | None = None):
-        destinations = self.active_connections[lobby_id].copy().difference(self.__parse_exclude__(exclude))
-        for connection in destinations:
-            await connection.send_text(data)
-
-manager = ConnectionManager()
+manager = ConnectionManager() # Same connection manager for all lobbies
 def get_connection_manager():
     return manager
-
 
 ConnectionManagerDep = Annotated[ConnectionManager, Depends(get_connection_manager)]
