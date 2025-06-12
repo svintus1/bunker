@@ -4,7 +4,7 @@ from crud import UserCRUD, LobbyCRUD, PlayerCRUD
 from core.database import PgSessionDep
 from services.lobby import LobbyService
 from services.player import PlayerService
-from utils.connection_manager import ConnectionManager
+from api.utils.connection_manager import ConnectionManager
 
 
 def get_user_crud(session: PgSessionDep) -> UserCRUD:
