@@ -4,7 +4,7 @@ from crud import UserCRUD, LobbyCRUD, PlayerCRUD
 from core.database import PgSessionDep
 from services.lobby import LobbyService
 from services.player import PlayerService
-from api.utils.connection_manager import ConnectionManager
+from api.utils.managers import LobbyManager
 
 
 def get_user_crud(session: PgSessionDep) -> UserCRUD:
@@ -39,8 +39,8 @@ LobbyServiceDep = Annotated[LobbyService, Depends(get_lobby_service)]
 PlayerServiceDep = Annotated[PlayerService, Depends(get_player_service)]
 
 
-manager = ConnectionManager() # Same connection manager for all lobbies
-def get_connection_manager():
-    return manager
+lobby_manager = LobbyManager() # Same lobby manager for all lobbies
+def get_lobby_manager():
+    return lobby_manager
 
-ConnectionManagerDep = Annotated[ConnectionManager, Depends(get_connection_manager)]
+LobbyManagerDep = Annotated[LobbyManager, Depends(get_lobby_manager)]
