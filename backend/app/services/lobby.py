@@ -1,9 +1,12 @@
+import logging
 import uuid
 
 from models import Lobby, LobbyCreate, Player
 from services.deps import LobbyCRUDDep, PlayerCRUDDep, UserCRUDDep
 from exceptions import NotFoundError, CreationError, LobbyStatusError, AlreadyInLobbyError
+from core.config import settings
 
+logger = logging.getLogger(settings.LOGGER_NAME)
 
 class LobbyService:
     def __init__(self, lobbies: LobbyCRUDDep, players: PlayerCRUDDep, users: UserCRUDDep):
@@ -78,8 +81,8 @@ class LobbyService:
 
         return None
 
-    def leave_lobby(self, lobby_id: str, player_id: str) -> Lobby | None:
-        """Remove player from lobby. Return updated lobby or None if not updated."""
+    def leave_lobby(self, lobby_id: str, player_id: str) -> Lobby:
+        """Remove player from lobby. Return updated lobby."""
         lobby = self.lobbies.get_lobby(lobby_id)
         player = self.players.get_player(player_id)
         
@@ -88,17 +91,15 @@ class LobbyService:
         if not player:
             raise NotFoundError(f"Player with id={player_id} not found")
 
-        if player_id in lobby.player_ids:
-            # Clear player's lobby reference
-            player.lobby_id = None
-            self.players.update_player(player)
-        
-            # Remove from lobby's player list
-            lobby.player_ids.remove(player_id)
-            self.lobbies.update_lobby(lobby)
-            return lobby
-
-        return None
+        self.players.delete_player(player)
+    
+        # Remove from lobby's player list
+        lobby.player_ids.remove(player_id)
+        self.lobbies.update_lobby(lobby)
+        logger.debug("Player %s left lobby %s", player_id, lobby_id)
+        if not lobby.player_ids:
+            self.lobbies.delete_lobby(lobby)
+        return lobby
 
     def delete_lobby(self, lobby_id: str) -> bool:
         """Delete lobby and its players"""

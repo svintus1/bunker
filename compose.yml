@@ -20,7 +20,7 @@ services:
       watch:
         - action: sync
           path: ./backend
-          target: /opt/app/
+          target: /opt/
           ignore:
             - ./.gitignore
             - ./Dockerfile

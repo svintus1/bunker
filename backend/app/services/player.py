@@ -18,3 +18,7 @@ class PlayerService:
         if not player:
             raise CreationError(f"Failed to create player for user {user.id}")
         return player
+
+    def find_player(self, player_id: str) -> Player | None:
+        """Find a player by their ID."""
+        return self.players.get_player(player_id)

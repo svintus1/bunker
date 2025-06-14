@@ -83,7 +83,7 @@ class PlayerCRUD:
     def delete_player(self, player: Player) -> bool:
         """Delete player from Redis."""
         try:
-            player.delete()
+            player.delete(pk=player.id)
             logger.debug("Delete player with id=%s", player.id)
             return True
         except Exception as e:
