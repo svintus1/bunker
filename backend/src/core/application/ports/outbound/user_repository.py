@@ -1,7 +1,7 @@
 import uuid
 from typing import Protocol
 
-from domain.models import User
+from src.core.domain.models import User
 
 
 class UserRepository(Protocol):

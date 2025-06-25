@@ -1,14 +1,14 @@
 import uuid
 from dataclasses import dataclass, field
 
-from domain.common.enums import PersonalityTraitGroup
+from ..common.enums import PersonalityTraitGroup
 
 
 @dataclass(frozen=True)
 class Property:
     """Base class for all card properties."""
 
-    id: str = field(default_factory=lambda: str(uuid.uuid4()))
+    id: uuid.UUID
 
 
 @dataclass(frozen=True)

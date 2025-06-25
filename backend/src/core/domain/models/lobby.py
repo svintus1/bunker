@@ -1,7 +1,7 @@
 import uuid
 from dataclasses import dataclass
 
-from domain.common.enums import LobbyStatus
+from ..common.enums import LobbyStatus
 
 
 @dataclass

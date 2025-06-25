@@ -1,9 +1,9 @@
 import uuid
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass
 class User:
-    id: uuid.UUID
     name: str
-    is_playing: bool
+    id: uuid.UUID = field(default_factory=uuid.uuid4)
+    is_playing: bool = False

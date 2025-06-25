@@ -3,8 +3,8 @@ from typing import Literal
 from abc import ABC
 from dataclasses import dataclass, field
 
-from domain.common.enums import BodyComposition, ExperienceLevel
-from domain.models.property import (
+from ..common.enums import BodyComposition, ExperienceLevel
+from ..models.property import (
     BodySicknessProperty,
     MentalSicknessProperty,
     PersonalityTraitProperty,
@@ -38,7 +38,7 @@ class PhysiqueCard(Card):
     height: int = field(default_factory=lambda: random.randint(130, 230))
     weight: int = field(default_factory=lambda: random.randint(30, 400))
     bmi: float = field(init=False)
-    body_composition: BodyComposition
+    body_composition: BodyComposition = field(init=False)
     def __post_init__(self):
         """Calculate BMI and body composition after initialization."""
         self.bmi = round(self.weight / ((self.height / 100) ** 2), 2)
@@ -71,11 +71,11 @@ class PhysiqueCard(Card):
 class HealthCard(Card):
     """Represents a card containing health-related information of a character."""
 
-    _body_sickness_probability: float = 0.33
-    _mental_sickness_probability: float = 0.25
     # Sicknesses would be retrieved if the probability is met, else would be None
     body_sickness: BodySicknessProperty | None
     mental_sickness: MentalSicknessProperty | None
+    _body_sickness_probability: float = 0.33
+    _mental_sickness_probability: float = 0.25
 
 
 @dataclass
