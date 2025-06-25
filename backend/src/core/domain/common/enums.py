@@ -31,3 +31,11 @@ class ExperienceLevel(StrEnum):
     ADVANCED        = "Продвинутый"
     PROFESSIONAL    = "Профессионал"
     MASTER          = "Мастер"
+
+
+class PersonalityTraitGroup(StrEnum):
+    MORAL           = auto()
+    SOCIAL          = auto()
+    EMOTIONAL       = auto()
+    INTELLECTUAL    = auto()
+    WILLPOWER       = auto()

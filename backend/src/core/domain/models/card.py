@@ -1,10 +1,20 @@
-from collections import defaultdict
 import random
 from typing import Literal
 from abc import ABC
 from dataclasses import dataclass, field
 
 from domain.common.enums import BodyComposition, ExperienceLevel
+from domain.models.property import (
+    BodySicknessProperty,
+    MentalSicknessProperty,
+    PersonalityTraitProperty,
+    ProfessionProperty,
+    HobbyProperty,
+    InventoryProperty,
+    WorldviewProperty,
+    AdditionalInfoProperty,
+    CataclysmDescriptionProperty,
+)
 
 @dataclass
 class Card(ABC):
@@ -63,22 +73,23 @@ class HealthCard(Card):
 
     _body_sickness_probability: float = 0.33
     _mental_sickness_probability: float = 0.25
-    body_sickness: str | None
-    mental_sickness: str | None
+    # Sicknesses would be retrieved if the probability is met, else would be None
+    body_sickness: BodySicknessProperty | None
+    mental_sickness: MentalSicknessProperty | None
 
 
 @dataclass
 class PersonalityCard(Card):
     """Represents a card containing personality traits of a character."""
 
-    personality_traits: list[str] = field(default_factory=list)
+    personality_traits: list[PersonalityTraitProperty] = field(default_factory=list)
 
 
 @dataclass
 class ProfessionCard(Card):
     """Represents a card containing profession-related information of a character."""
 
-    profession: str
+    profession: ProfessionProperty
     experience: ExperienceLevel = field(default_factory=lambda: random.choice(list(ExperienceLevel)))
 
 
@@ -86,7 +97,7 @@ class ProfessionCard(Card):
 class HobbyCard(Card):
     """Represents a card containing hobbies and interests of a character."""
 
-    hobby: str
+    hobby: HobbyProperty
     experience: ExperienceLevel = field(default_factory=lambda: random.choice(list(ExperienceLevel)))
 
 
@@ -94,21 +105,21 @@ class HobbyCard(Card):
 class InventoryCard(Card):
     """Represents a card containing inventory items of a character."""
 
-    items: dict[str, int] = field(default_factory=defaultdict(int))
+    items: list[InventoryProperty] = field(default_factory=list)
 
 
 @dataclass
 class WorldviewCard(Card):
     """Represents a card containing worldview-related information of a character."""
 
-    worldview: str
+    worldview: WorldviewProperty | None = None
 
 
 @dataclass
 class AdditionalInfoCard(Card):
     """Represents a card containing additional information about a character."""
 
-    additional_info: str
+    additional_info: AdditionalInfoProperty
 
 
 @dataclass
@@ -124,7 +135,7 @@ class TimeInBunker:
 class CataclysmCard(Card):
     """Represents a card containing information about the cataclysm."""
 
-    description: str
+    description: CataclysmDescriptionProperty
     people_left: int = field(
         # Approx. [0; 1000_000_000]
         default_factory=lambda: int(random.expovariate(10e-9))
