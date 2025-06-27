@@ -15,7 +15,9 @@ async def test_create_lobby_success(user_repository_mock, lobby_repository_mock)
     user_id = uuid.uuid4()
     lobby_name = "Test Lobby"
     user = User(id=user_id, name="John Doe")
+
     user_repository_mock.get_user_by_id = AsyncMock(return_value=user)
+
     use_case = CreateLobby(lobby_repository=lobby_repository_mock, user_repository=user_repository_mock)
     
     lobby = await use_case.execute(name=lobby_name, creator_id=user_id)
