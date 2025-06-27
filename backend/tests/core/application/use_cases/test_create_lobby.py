@@ -16,7 +16,7 @@ async def test_create_lobby_success(user_repository_mock, lobby_repository_mock)
     lobby_name = "Test Lobby"
     user = User(id=user_id, name="John Doe")
 
-    user_repository_mock.get_user_by_id = AsyncMock(return_value=user)
+    user_repository_mock.get_user_by_id.return_value = user
 
     use_case = CreateLobby(lobby_repository=lobby_repository_mock, user_repository=user_repository_mock)
     
@@ -33,7 +33,7 @@ async def test_create_lobby_success(user_repository_mock, lobby_repository_mock)
 @pytest.mark.asyncio
 async def test_create_lobby_empty_name(user_repository_mock, lobby_repository_mock):
     """Test creation of a lobby with an empty name."""
-    user_id = "123e4567-e89b-12d3-a456-426614174000"
+    user_id = uuid.uuid4()
     use_case = CreateLobby(lobby_repository=lobby_repository_mock, user_repository=user_repository_mock)
     
     with pytest.raises(ValueError, match="Lobby name cannot be empty"):
@@ -42,8 +42,8 @@ async def test_create_lobby_empty_name(user_repository_mock, lobby_repository_mo
 @pytest.mark.asyncio
 async def test_create_lobby_user_not_found(user_repository_mock, lobby_repository_mock):
     """Test creation of a lobby with a non-existent user."""
-    user_id = "123e4567-e89b-12d3-a456-426614174000"
-    user_repository_mock.get_user_by_id = AsyncMock(return_value=None)
+    user_id = uuid.uuid4()
+    user_repository_mock.get_user_by_id.return_value = None
     use_case = CreateLobby(lobby_repository=lobby_repository_mock, user_repository=user_repository_mock)
     
     with pytest.raises(UserNotFound, match="Creator user does not exist"):
