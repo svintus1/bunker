@@ -12,7 +12,7 @@ from src.core.domain.common.enums import LobbyStatus
 @pytest.mark.asyncio
 async def test_create_lobby_success(user_repository_mock, lobby_repository_mock):
     """Test successful creation of a lobby."""
-    user_id = "123e4567-e89b-12d3-a456-426614174000"
+    user_id = uuid.uuid4()
     lobby_name = "Test Lobby"
     user = User(id=user_id, name="John Doe")
     user_repository_mock.get_user_by_id = AsyncMock(return_value=user)
