@@ -1,7 +1,6 @@
 import uuid
 
 import pytest
-from unittest.mock import AsyncMock
 
 from src.core.application.exceptions import UserNotFound
 from src.core.domain.models import User
