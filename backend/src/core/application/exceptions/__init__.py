@@ -3,6 +3,7 @@ from .exceptions import (
     UserAlreadyExists,
     LobbyNotFound,
     LobbyAlreadyExists,
+    GameAlreadyStarted
 )
 
 __all__ = [
@@ -10,4 +11,5 @@ __all__ = [
     "UserAlreadyExists",
     "LobbyNotFound",
     "LobbyAlreadyExists",
+    "GameAlreadyStarted",
 ]

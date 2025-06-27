@@ -12,3 +12,7 @@ class LobbyNotFound(RuntimeError):
 
 class LobbyAlreadyExists(RuntimeError):
     pass
+
+
+class GameAlreadyStarted(RuntimeError):
+    pass
