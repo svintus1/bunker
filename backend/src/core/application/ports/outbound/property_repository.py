@@ -1,6 +1,6 @@
 from typing import Protocol, Type, TypeVar
 
-import domain.models.property as p
+import src.core.domain.models.property as p
 
 class PropertyRepository(Protocol):
     """Interface for property repository operations."""

@@ -1,7 +1,7 @@
 import uuid
 from typing import Protocol
 
-from domain.models import Lobby
+from src.core.domain.models import Lobby
 
 
 class LobbyRepository(Protocol):
