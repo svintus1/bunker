@@ -10,6 +10,10 @@ class UserAlreadyInLobby(RuntimeError):
     pass
 
 
+class UserNotInLobby(RuntimeError):
+    pass
+
+
 class LobbyNotFound(RuntimeError):
     pass
 
