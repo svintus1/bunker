@@ -1,3 +1,5 @@
+import uuid
+
 from src.core.domain.models import Lobby
 from src.core.application.ports.outbound.lobby_repository import LobbyRepository
 from src.core.application.ports.outbound.user_repository import UserRepository
@@ -9,7 +11,7 @@ class CreateLobby:
         self.lobby_repository = lobby_repository
         self.user_repository = user_repository
 
-    async def execute(self, name: str, owner_user_id: str) -> Lobby:
+    async def execute(self, name: str, owner_user_id: uuid.UUID) -> Lobby:
         """Create a new lobby with the provided data."""
         if not name:
             raise ValueError("Lobby name cannot be empty")
