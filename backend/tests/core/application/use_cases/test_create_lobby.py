@@ -19,10 +19,10 @@ async def test_create_lobby_success(user_repository_mock, lobby_repository_mock)
 
     use_case = CreateLobby(lobby_repository=lobby_repository_mock, user_repository=user_repository_mock)
     
-    lobby = await use_case.execute(name=lobby_name, creator_id=user_id)
+    lobby = await use_case.execute(name=lobby_name, owner_user_id=user_id)
     
     assert lobby.name == lobby_name
-    assert lobby.creator_user_id == user_id
+    assert lobby.owner_user_id == user_id
     assert len(lobby.user_ids) == 1
     assert lobby.user_ids[0] == user_id
     assert lobby.status == LobbyStatus.WAITING
@@ -36,7 +36,7 @@ async def test_create_lobby_empty_name(user_repository_mock, lobby_repository_mo
     use_case = CreateLobby(lobby_repository=lobby_repository_mock, user_repository=user_repository_mock)
     
     with pytest.raises(ValueError, match="Lobby name cannot be empty"):
-        await use_case.execute(name="", creator_id=user_id)
+        await use_case.execute(name="", owner_user_id=user_id)
 
 @pytest.mark.asyncio
 async def test_create_lobby_user_not_found(user_repository_mock, lobby_repository_mock):
@@ -46,4 +46,4 @@ async def test_create_lobby_user_not_found(user_repository_mock, lobby_repositor
     use_case = CreateLobby(lobby_repository=lobby_repository_mock, user_repository=user_repository_mock)
     
     with pytest.raises(UserNotFound, match="Creator user does not exist"):
-        await use_case.execute(name="Test Lobby", creator_id=user_id)
+        await use_case.execute(name="Test Lobby", owner_user_id=user_id)

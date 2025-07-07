@@ -9,15 +9,15 @@ class CreateLobby:
         self.lobby_repository = lobby_repository
         self.user_repository = user_repository
 
-    async def execute(self, name: str, creator_id: str) -> Lobby:
+    async def execute(self, name: str, owner_user_id: str) -> Lobby:
         """Create a new lobby with the provided data."""
         if not name:
             raise ValueError("Lobby name cannot be empty")
 
-        creator = await self.user_repository.get_user_by_id(creator_id)
-        if not creator:
-            raise UserNotFound("Creator user does not exist")
+        owner_user = await self.user_repository.get_user_by_id(owner_user_id)
+        if not owner_user:
+            raise UserNotFound("Owner user does not exist")
 
-        lobby = Lobby(name=name, creator_user_id=creator.id, user_ids=[creator.id])
+        lobby = Lobby(name=name, owner_user_id=owner_user.id, user_ids=[owner_user.id])
         await self.lobby_repository.create_lobby(lobby)
         return lobby 
