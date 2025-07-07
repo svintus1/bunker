@@ -45,5 +45,5 @@ async def test_create_lobby_user_not_found(user_repository_mock, lobby_repositor
     user_repository_mock.get_user_by_id.return_value = None
     use_case = CreateLobby(lobby_repository=lobby_repository_mock, user_repository=user_repository_mock)
     
-    with pytest.raises(UserNotFound, match="Creator user does not exist"):
+    with pytest.raises(UserNotFound, match="Owner user does not exist"):
         await use_case.execute(name="Test Lobby", owner_user_id=user_id)

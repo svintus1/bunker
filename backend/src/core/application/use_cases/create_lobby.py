@@ -18,6 +18,6 @@ class CreateLobby:
         if not owner_user:
             raise UserNotFound("Owner user does not exist")
 
-        lobby = Lobby(name=name, owner_user_id=owner_user.id, user_ids=[owner_user.id])
+        lobby = Lobby(name=name, owner_user_id=owner_user.id)
         await self.lobby_repository.create_lobby(lobby)
         return lobby 

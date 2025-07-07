@@ -14,7 +14,7 @@ async def test_join_lobby_success(user_repository_mock, lobby_repository_mock):
     lobby_id = uuid.uuid4()
     owner_user = User(id=owner_user_id, name="John Doe")
     joining_user = User(id=uuid.uuid4(), name="Jane Doe")
-    lobby = Lobby(id=lobby_id, name="Test Lobby", owner_user_id=owner_user.id, user_ids=[owner_user.id], status=LobbyStatus.WAITING)
+    lobby = Lobby(id=lobby_id, name="Test Lobby", owner_user_id=owner_user.id)
 
     user_repository_mock.get_user_by_id.return_value = joining_user
     lobby_repository_mock.get_lobby_by_id.return_value = lobby
@@ -46,7 +46,7 @@ async def test_join_lobby_user_not_found(user_repository_mock, lobby_repository_
     user_id = uuid.uuid4()
     lobby_id = uuid.uuid4()
 
-    lobby = Lobby(id=lobby_id, name="Test Lobby", owner_user_id=user_id, user_ids=[], status=LobbyStatus.WAITING)
+    lobby = Lobby(id=lobby_id, name="Test Lobby", owner_user_id=user_id, status=LobbyStatus.WAITING)
 
     user_repository_mock.get_user_by_id.return_value = None
     lobby_repository_mock.get_lobby_by_id.return_value = lobby
@@ -61,7 +61,7 @@ async def test_join_lobby_game_already_started(user_repository_mock, lobby_repos
     user_id = uuid.uuid4()
     lobby_id = uuid.uuid4()
     user = User(id=user_id, name="John Doe")
-    lobby = Lobby(id=lobby_id, name="Test Lobby", owner_user_id=user_id, user_ids=[user_id], status=LobbyStatus.IN_GAME)
+    lobby = Lobby(id=lobby_id, name="Test Lobby", owner_user_id=user_id, status=LobbyStatus.IN_GAME)
 
     user_repository_mock.get_user_by_id.return_value = user
     lobby_repository_mock.get_lobby_by_id.return_value = lobby
@@ -76,7 +76,7 @@ async def test_join_lobby_user_already_in_lobby(user_repository_mock, lobby_repo
     user_id = uuid.uuid4()
     lobby_id = uuid.uuid4()
     user = User(id=user_id, name="John Doe")
-    lobby = Lobby(id=lobby_id, name="Test Lobby", owner_user_id=user_id, user_ids=[user_id], status=LobbyStatus.WAITING)
+    lobby = Lobby(id=lobby_id, name="Test Lobby", owner_user_id=user_id, status=LobbyStatus.WAITING)
 
     user_repository_mock.get_user_by_id.return_value = user
     lobby_repository_mock.get_lobby_by_id.return_value = lobby
