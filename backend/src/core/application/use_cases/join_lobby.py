@@ -7,7 +7,6 @@ from src.core.domain.models.lobby import Lobby
 from src.core.domain.common.enums import LobbyStatus
 
 
-
 class JoinLobby:
     def __init__(self, lobby_repository: LobbyRepository, user_repository: UserRepository):
         self.lobby_repository = lobby_repository
